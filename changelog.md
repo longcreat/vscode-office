@@ -1,5 +1,13 @@
 # Change log
 
+# 4.3.0 2026-9-15
+
+Markdown Editor:
+
+- Support automatic heading numbering, configurable in the settings panel.
+- Number the outline entries to stay consistent with the document.
+- Remove the sponsor banner and telemetry.
+
 # 4.2.0 2026-8-16
 
 Markdown Editor:
@@ -99,10 +107,6 @@ Excel:
   - Fix merged cell region recognition for the default selected cell.
   - Fix CSV loading failure when the first row is empty.
 
-PDF:
-
-- Add PDF Pro tools and polish the tools dialog.
-
 Git History:
 
 - Improve details dialog positioning.
@@ -150,7 +154,6 @@ New:
 - Add Shift+Tab support.
 - Add typewriter mode support.
 - Add new line button for quick row insertion.
-- Support quick drag to resize images(Pro Feature).
 
 Update:
 
@@ -247,14 +250,6 @@ Markdown Editor:
 - Improve light/dark mode switching logic.
 - Fix failure to open relative path files in IR mode.
 - Support font size adjustment via scroll wheel in the editor.
-
-Pro:
-
-- Introduce Pro license activation.
-- Remove Sponsor banner after Pro activation.
-- Support custom font color and background color editing.
-- Support adjusting image width and height in the Markdown editor.
-- Support beautiful PDF / HTML / DOCX export with theme, font, and font-size options.
 
 Git History:
 
@@ -361,12 +356,10 @@ New:
 
 - Add Kotlin syntax highlighting
 - Add Nginx conf syntax highlighting
-- Add anonymous usage telemetry (respects VS Code global telemetry settings)
 
 Update:
 
 - Beautify the SVG and PDF view
-- Hide sponsor banner in Excel view while loading
 - Refresh Git history after deleting filtered branches
 
 # 4.0.3 2026-6-18

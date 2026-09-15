@@ -57,6 +57,7 @@ export const CODE_FONT_FAMILY_KEY = "codeFontFamily";
 export const BOLD_COLOR_KEY = "boldColor";
 export const HTML_EDITOR_LINE_WRAP_KEY = "htmlEditorLineWrap";
 export const TYPEWRITER_MODE_KEY = "typewriterMode";
+export const HEADING_NUMBERING_KEY = "headingNumbering";
 export const LAST_NON_AUTO_EDITOR_THEME_KEY = "lastNonAutoEditorTheme";
 export const LAST_LIGHT_EDITOR_THEME_KEY = "lastLightEditorTheme";
 export const LAST_DARK_EDITOR_THEME_KEY = "lastDarkEditorTheme";
@@ -128,12 +129,17 @@ export const PAGE_WIDTH_DEFAULT = "100%";
 
 export const PAGE_WIDTH_OPTIONS = [
     { label: "100%", value: "100%" },
+    { label: "90%", value: "90%" },
+    { label: "80%", value: "80%" },
+    { label: "768px", value: "768px" },
+    { label: "960px", value: "960px" },
+    { label: "1100px", value: "1100px" },
+    { label: "1280px", value: "1280px" },
+    { label: "1600px", value: "1600px" },
     { label: "A4 (210mm)", value: "210mm" },
     { label: "A5 (148mm)", value: "148mm" },
     { label: "B5 (176mm)", value: "176mm" },
     { label: "Letter (8.5in)", value: "8.5in" },
-    { label: "768px", value: "768px" },
-    { label: "960px", value: "960px" },
 ] as const;
 
 export const CODE_BLOCK_MAX_HEIGHT_KEY = "codeBlockMaxHeight";
@@ -338,6 +344,16 @@ export const applyPageWidthSetting = (vditorElement: HTMLElement, pageWidth?: st
     vditorElement.setAttribute("data-page-width-mode", "fluid");
 };
 
+export const applyHeadingNumberingClass = (vditorElement: HTMLElement, enabled?: boolean) => {
+    const on = enabled ?? getGlobalLocalStorageSetting<boolean>(HEADING_NUMBERING_KEY, false) === true;
+    const targets = vditorElement.querySelectorAll<HTMLElement>(".vditor-ir, .vditor-wysiwyg");
+    const outline = vditorElement.querySelector<HTMLElement>(".vditor-outline");
+    for (const editor of targets) {
+        editor.classList.toggle("vditor--heading-numbering", on);
+    }
+    outline?.classList.toggle("vditor--heading-numbering", on);
+};
+
 export const applyEditorSettings = (vditorElement: HTMLElement) => {
     const uiSize = getGlobalLocalStorageSetting<number>(UI_FONT_SIZE_KEY);
     const editorSize = getGlobalLocalStorageSetting<number>(EDITOR_FONT_SIZE_KEY);
@@ -368,6 +384,7 @@ export const applyEditorSettings = (vditorElement: HTMLElement) => {
         vditorElement.style.removeProperty("--cm-block-max-height");
     }
     applyTypewriterModeClass(vditorElement);
+    applyHeadingNumberingClass(vditorElement);
 };
 
 export const applyTypewriterModeClass = (vditorElement: HTMLElement, enabled?: boolean) => {

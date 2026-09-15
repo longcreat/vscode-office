@@ -9,6 +9,8 @@ import path, { dirname, extname, isAbsolute, join, parse } from 'path';
 import * as vscode from 'vscode';
 import { Holder } from './markdown/holder';
 import { convertMd } from "./markdown/markdown-pdf";
+import { exportByType } from "./markdown/html-export";
+import { buildRenderedExportHtml } from "./markdown/exportHtml";
 import { Global, i18n } from "@/common/global";
 
 export type ExportType = 'pdf' | 'html' | 'docx';
@@ -16,6 +18,20 @@ export type ExportType = 'pdf' | 'html' | 'docx';
 interface ExportOption {
     type?: ExportType;
     withoutOutline?: boolean;
+}
+
+export interface RenderedExportChainNode {
+    tag: string;
+    className: string;
+    attrs: Record<string, string>;
+}
+
+export interface RenderedExportPayload {
+    html: string;
+    bodyClass: string;
+    css: string;
+    cssVars: string;
+    chain: RenderedExportChainNode[];
 }
 
 export class MarkdownService {
@@ -40,9 +56,31 @@ export class MarkdownService {
         }
     }
 
+    /**
+     * WYSIWYG export: print the already-rendered webview DOM (styles, mermaid svg, code highlighting included).
+     */
+    public async exportRendered(uri: vscode.Uri, payload: RenderedExportPayload, option: ExportOption = {}) {
+        const { type = 'pdf' } = option;
+        try {
+            if (type != 'html') {
+                vscode.window.showInformationMessage(i18n('ext.markdown.exportStart', type))
+            }
+            const html = buildRenderedExportHtml(payload, path.basename(uri.fsPath), option);
+            const config = this.getConfig(option);
+            // only pdfMarginTop is configurable, the other sides would default to 0 and clip content
+            config.margin = { ...config.margin, right: 40, bottom: 40, left: 40 };
+            await exportByType(uri.fsPath, html, type, config)
+            vscode.window.showInformationMessage(i18n('ext.markdown.exportSuccess', type))
+        } catch (error) {
+            Output.log(error)
+        }
+    }
+
     public getConfig(option: ExportOption) {
-        const top = Global.getConfig("pdfMarginTop")
+        const top = Global.getConfig<number | undefined>("pdfMarginTop")
         const { type = 'pdf', withoutOutline = false } = option;
+        // exportRendered adds right/bottom/left later, so the type has to allow all four sides
+        const margin: { top?: number; right?: number; bottom?: number; left?: number } = { top };
         return {
             type,
             "styles": [],
@@ -56,7 +94,7 @@ export class MarkdownService {
             // pdf print option
             "printBackground": true,
             format: "A4",
-            margin: { top }
+            margin,
         };
     }
 

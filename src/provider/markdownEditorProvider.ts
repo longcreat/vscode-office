@@ -6,9 +6,8 @@ import { ensureParentDirectory } from '@/common/workspaceFs';
 import { Handler } from '../common/handler';
 import { Util } from '../common/util';
 import { Holder } from '../service/markdown/holder';
-import { MarkdownService } from '../service/markdownService';
+import { MarkdownService, type RenderedExportPayload } from '../service/markdownService';
 import { Global, i18n } from '@/common/global';
-import { TelemetryService } from '@/service/telemetryService';
 import { openWikiLink } from '@/service/markdown/wikilink';
 import { streamCustomAI } from '@/service/ai/customAIClient';
 import { buildAIOutputLanguageInstruction } from '@/service/ai/aiOutputLanguage';
@@ -19,7 +18,6 @@ import {
     unregisterMarkdownWebview,
 } from '@/service/markdown/blockScroll';
 import { ViewerSettingsService } from '@/service/viewerSettingsService';
-import { fileTypeFromPath } from '@/service/officeViewType';
 import { parseWebviewResourceUri } from '@/common/webviewUri';
 
 function getRuntimePlatform(): string {
@@ -53,19 +51,24 @@ export class MarkdownEditorProvider implements vscode.CustomTextEditorProvider {
     private aiAbortController: AbortController | null = null;
     private aiCancellationSource: vscode.CancellationTokenSource | null = null;
 
-    private getMarkdownTelemetryProps(configuration = vscode.workspace.getConfiguration("vscode-office")) {
-        return {
-            editorTheme: String(configuration.get<string>("editorTheme", "Auto")),
-            codeTheme: String(configuration.get<string>("codeMirrorTheme", "Auto")),
-        };
-    }
-
     constructor(
         private context: vscode.ExtensionContext, private options: MarkdownEditorProviderOptions = {}
     ) {
         this.countStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
         this.purgeLegacyGlobalState();
         MarkdownEditorProvider.registerConfigSync(this.context);
+    }
+
+    private requestExportPayload(handler: Handler): Promise<RenderedExportPayload | null> {
+        return new Promise((resolve) => {
+            // the webview walks every lazy code block before answering, which can take a few seconds
+            const timer = setTimeout(() => resolve(null), 30000);
+            handler.on('exportPayload', (payload: RenderedExportPayload | null) => {
+                clearTimeout(timer);
+                resolve(payload ?? null);
+            });
+            handler.emit('queryExportPayload');
+        });
     }
 
     static registerConfigSync(context: vscode.ExtensionContext): void {
@@ -141,11 +144,6 @@ export class MarkdownEditorProvider implements vscode.CustomTextEditorProvider {
             ],
         }
         const handler = Handler.bind(webviewPanel, uri);
-        TelemetryService.get()?.trackViewOpen(
-            'markdown',
-            fileTypeFromPath(uri.fsPath),
-            this.getMarkdownTelemetryProps(),
-        );
         void this.handleMarkdown(document, handler, folderPath);
         handler.on('developerTool', () => vscode.commands.executeCommand('workbench.action.toggleDevTools'))
     }
@@ -304,17 +302,18 @@ export class MarkdownEditorProvider implements vscode.CustomTextEditorProvider {
             await flushDocumentSync();
             this.updateCount(content);
             vscode.commands.executeCommand('workbench.action.files.save');
-        }).on("export", (option) => {
-            vscode.commands.executeCommand('workbench.action.files.save');
-            new MarkdownService(this.context).exportMarkdown(uri, option)
+        }).on("export", async (option) => {
+            await vscode.commands.executeCommand('workbench.action.files.save');
+            const service = new MarkdownService(this.context);
+            const payload = await this.requestExportPayload(handler);
+            if (payload) {
+                await service.exportRendered(uri, payload, option);
+            } else {
+                vscode.window.showWarningMessage('Office Viewer: WYSIWYG export unavailable, falling back to legacy pipeline');
+                await service.exportMarkdown(uri, option);
+            }
         }).on('developerTool', () => {
             vscode.commands.executeCommand('workbench.action.toggleDevTools')
-        }).on('openAbout', () => {
-        }).on('openSponsor', () => {
-            vscode.commands.executeCommand(
-                'workbench.extensions.action.showExtensionsWithIds',
-                ['cweijan.vscode-database-client2'],
-            );
         }).on('openExternal', (url: string) => {
             if (url) {
                 vscode.env.openExternal(vscode.Uri.parse(url));
@@ -342,14 +341,6 @@ export class MarkdownEditorProvider implements vscode.CustomTextEditorProvider {
             await this.handleAIPolish(handler, payload.markdown, payload.options);
         }).on('aiPolishCancel', () => {
             this.cancelAIPolish();
-        }).on('telemetry', (payload: { event: string; properties?: Record<string, string | number | boolean> }) => {
-            const properties = {
-                ...this.getMarkdownTelemetryProps(),
-                ...Object.fromEntries(
-                    Object.entries(payload.properties ?? {}).map(([key, value]) => [key, String(value)]),
-                ),
-            };
-            TelemetryService.get()?.trackEvent(payload.event, properties);
         }).on('syncViewerSettings', async (settings) => {
             if (await ViewerSettingsService.exists()) {
                 await ViewerSettingsService.writeFromVditor(settings);

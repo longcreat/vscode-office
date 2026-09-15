@@ -62,12 +62,6 @@ Office Viewer 內建完整的 Git 歷史工作區，讓你無需離開 VS Code �
 - HTTP: 在 `.http`、`.rest` 檔案中傳送請求（整合自 [REST Client](https://github.com/Huachao/vscode-restclient)，並修正了本地請求的已知問題）；按 `Ctrl+Enter` / `⌘ Enter` 傳送
 - Java: 開啟 `.class` 檔案可反編譯並查看原始碼
 
-## Sponsor
-
-[![Database Client](https://doc.database-client.com/public/logo.png)](https://marketplace.visualstudio.com/items?itemName=cweijan.vscode-database-client2)
-
-適用於 Visual Studio Code 的資料庫用戶端，支援 **MySQL/MariaDB、PostgreSQL、SQLite、Redis** 以及 **ElasticSearch** 等資料庫的管理，且可作為 SSH 用戶端，極大地提升您的生產力！[立刻安裝](https://marketplace.visualstudio.com/items?itemName=cweijan.vscode-database-client2)。
-
 ## 開發指南
 
 ### 環境要求
@@ -107,31 +101,6 @@ npm run dev:web
 npm run build    # 生產建置
 npm run package  # 產生 .vsix
 ```
-
-## 使用資料（Usage Data）
-
-Office Viewer 會收集**匿名使用資料**，用於了解各預覽功能的使用情況，以便改進擴充功能。資料透過官方模組 [`@vscode/extension-telemetry`](https://www.npmjs.com/package/@vscode/extension-telemetry) 傳送至 [Azure Application Insights](https://learn.microsoft.com/zh-tw/azure/azure-monitor/app/app-insights-overview)。
-
-### 收集內容
-
-| 事件 | 觸發時機 | 屬性 |
-|------|---------|------|
-| `view.open` | 開啟自訂預覽/編輯器 | `viewType`（如 `excel`、`markdown`、`pdf`）、`fileType`（僅副檔名，如 `xlsx`、`md`） |
-
-**不會**收集檔案路徑、檔名、URL、儲存庫名稱、請求內容或其他可識別個人身份的資訊。
-
-### 如何關閉
-
-僅在以下**兩項均允許**時才會上報：
-
-1. VS Code 全域遙測已開啟（`telemetry.telemetryLevel` 不為 `off`，或舊版中 `telemetry.enableTelemetry` 為 `true`）。
-2. 擴充功能遙測已開啟：在設定中將 `vscode-office.enableTelemetry` 設為 `false` 可單獨關閉本擴充功能的上報。
-
-也可在 **設定 → 應用程式 → 遙測** 中關閉 VS Code 的全部遙測。
-
-### 維護者設定
-
-若自行建置並發佈本擴充功能，請參閱 [docs/telemetry.md](docs/telemetry.md) 設定 Azure Application Insights 及範例查詢。
 
 ## Credits
 

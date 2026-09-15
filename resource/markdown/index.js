@@ -1,6 +1,16 @@
 import { getToolbar, bindShortcut, createContextMenu, setAIAvailable, } from "./util.js";
 import { observeWorkspaceAbsoluteImages, createMarkdownValueReader, restoreWorkspaceBaseUrls, } from "./imagePath.js";
 import { mapVscodeLanguageToVditorLang } from "./lang.js";
+import { collectExportPayload } from "./exportPayload.js";
+
+handler.on('queryExportPayload', async () => {
+  try {
+    handler.emit('exportPayload', await collectExportPayload());
+  } catch (e) {
+    console.error('collectExportPayload failed', e);
+    handler.emit('exportPayload', null);
+  }
+});
 
 handler.on("open", async (md) => {
   const { content, rootPath, workspaceBaseUrl, documentCacheId, pendingFragment, shouldRestoreFocus, config, fileName } = md;
@@ -36,9 +46,6 @@ handler.on("open", async (md) => {
       handler.emit('doSave', getMarkdownValue());
       editor?.markSaved();
     }),
-    onAboutOpen: () => handler.emit('openAbout'),
-    onSponsorLogoClick: () => handler.emit('openSponsor'),
-    onSponsorSiteClick: () => handler.emit('openExternal', 'https://database-client.com/'),
     onLinkClick(payload, event) {
       const isCompose = event.metaKey || event.ctrlKey;
       if (payload.action !== "dblclick" && !(payload.action === "click" && isCompose)) {
@@ -100,9 +107,6 @@ handler.on("open", async (md) => {
           handler.emit("img", { data: reader.result, ext })
         };
       }
-    },
-    onTelemetry(event, properties) {
-      handler.emit('telemetry', { event, properties });
     },
     ai: {
       onPolish(markdown, apply, options) {

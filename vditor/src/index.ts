@@ -22,7 +22,6 @@ import { Toolbar } from "./ts/toolbar/index";
 import { disableToolbar, hidePanel } from "./ts/toolbar/setToolbar";
 import { enableToolbar } from "./ts/toolbar/setToolbar";
 import { AIDialog } from "./ts/ui/aiDialog";
-import { telemetry } from "./ts/util/telemetry";
 import { AIReviewPanel } from "./ts/ui/aiReviewPanel";
 import { initUI } from "./ts/ui/initUI";
 import { setCodeTheme } from "./ts/ui/setCodeTheme";
@@ -69,6 +68,7 @@ import {
     refreshAISettingsToolbarPanel,
     refreshSettingsToolbarPanel,
 } from "./ts/ui/settingsPanel";
+import { syncHeadingNumberingBase } from "./ts/ui/headingNumbering";
 import { WYSIWYG } from "./ts/wysiwyg/index";
 import { input } from "./ts/wysiwyg/input";
 import { ensureEditorBoundaryParagraphs, renderDomByMd } from "./ts/wysiwyg/renderDomByMd";
@@ -439,6 +439,7 @@ class Vditor {
     public applyViewerSettings(data: ViewerSettingsExport) {
         importViewerSettings(data);
         applyEditorSettings(this.vditor.element);
+        syncHeadingNumberingBase(this.vditor);
         const outlineWidth = getGlobalLocalStorageSetting<number>("outlineWidth");
         if (outlineWidth && this.vditor.outline?.element) {
             this.vditor.outline.element.style.width = `${outlineWidth}px`;
@@ -506,10 +507,6 @@ class Vditor {
                 onStop: () => finishReview(true),
             },
         );
-        telemetry(this.vditor, "markdown.ai.polish", {
-            engine: options?.engine ?? "vscode",
-            isSelection: !replaceAll,
-        });
         onPolish(markdown, (_result: string) => { /* streaming via streamAIChunk/endAIStream */ }, options);
     }
 

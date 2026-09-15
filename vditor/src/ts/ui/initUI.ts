@@ -13,6 +13,7 @@ import { applyEditorSettings } from "../util/globalLocalStorageSettings";
 import { initSaveToolbarState } from "../util/saveToolbarState";
 import { configureHistoryDeferByDocumentLength } from "../util/historySchedule";
 import { bindTypewriterMode } from "./typewriterMode";
+import { bindHeadingNumbering } from "./headingNumbering";
 
 export const initUI = (vditor: IVditor) => {
   purgeLegacyDocumentStateKeys();
@@ -80,6 +81,7 @@ export const initUI = (vditor: IVditor) => {
   bindDocumentScrollPersistence(vditor);
   bindHistoryInputBufferClick(vditor);
   bindTypewriterMode(vditor);
+  bindHeadingNumbering(vditor);
 
   const initValue = afterRender(vditor);
   let mode = vditor.options.mode;

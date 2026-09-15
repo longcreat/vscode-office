@@ -1,0 +1,329 @@
+// 标题自动编号（设置面板开关，class 由 globalLocalStorageSettings.applyHeadingNumberingClass 维护）
+// 编号基准取文档实际最小标题层级（data-hn-base，由 ui/headingNumbering.ts 维护），
+// 基准之上的层级（如文档标题）不参与编号；顶层编号形如 "1. "，下级为 "1.1 "。
+.vditor-ir.vditor--heading-numbering,
+.vditor-wysiwyg.vditor--heading-numbering {
+  .vditor-reset {
+    counter-reset: hn1 hn2 hn3 hn4 hn5 hn6;
+  }
+
+  .vditor-reset > h1 {
+    counter-increment: hn1;
+    counter-reset: hn2 hn3 hn4 hn5 hn6;
+  }
+
+  .vditor-reset > h2 {
+    counter-increment: hn2;
+    counter-reset: hn3 hn4 hn5 hn6;
+  }
+
+  .vditor-reset > h3 {
+    counter-increment: hn3;
+    counter-reset: hn4 hn5 hn6;
+  }
+
+  .vditor-reset > h4 {
+    counter-increment: hn4;
+    counter-reset: hn5 hn6;
+  }
+
+  .vditor-reset > h5 {
+    counter-increment: hn5;
+    counter-reset: hn6;
+  }
+
+  .vditor-reset > h6 {
+    counter-increment: hn6;
+  }
+
+  // 基准之上的层级不编号也不消耗计数器（如基准为 2 时文档中的 h1 标题）
+  &[data-hn-base="2"] .vditor-reset > h1 {
+    counter-increment: none;
+    counter-reset: none;
+  }
+
+  &[data-hn-base="3"] .vditor-reset > h1,
+  &[data-hn-base="3"] .vditor-reset > h2 {
+    counter-increment: none;
+    counter-reset: none;
+  }
+
+  &[data-hn-base="4"] .vditor-reset > h1,
+  &[data-hn-base="4"] .vditor-reset > h2,
+  &[data-hn-base="4"] .vditor-reset > h3 {
+    counter-increment: none;
+    counter-reset: none;
+  }
+
+  &[data-hn-base="5"] .vditor-reset > h1,
+  &[data-hn-base="5"] .vditor-reset > h2,
+  &[data-hn-base="5"] .vditor-reset > h3,
+  &[data-hn-base="5"] .vditor-reset > h4 {
+    counter-increment: none;
+    counter-reset: none;
+  }
+
+  &[data-hn-base="6"] .vditor-reset > h1,
+  &[data-hn-base="6"] .vditor-reset > h2,
+  &[data-hn-base="6"] .vditor-reset > h3,
+  &[data-hn-base="6"] .vditor-reset > h4,
+  &[data-hn-base="6"] .vditor-reset > h5 {
+    counter-increment: none;
+    counter-reset: none;
+  }
+
+  .vditor-reset > h1::before,
+  .vditor-reset > h2::before,
+  .vditor-reset > h3::before,
+  .vditor-reset > h4::before,
+  .vditor-reset > h5::before,
+  .vditor-reset > h6::before {
+    color: inherit;
+  }
+
+  // 基准 = 1：h1 -> "1."，h2 -> "1.1"，h3 -> "1.1.1" …
+  &[data-hn-base="1"] .vditor-reset > h1::before {
+    content: counter(hn1) '. ';
+  }
+
+  &[data-hn-base="1"] .vditor-reset > h2::before {
+    content: counter(hn1) '.' counter(hn2) ' ';
+  }
+
+  &[data-hn-base="1"] .vditor-reset > h3::before {
+    content: counter(hn1) '.' counter(hn2) '.' counter(hn3) ' ';
+  }
+
+  &[data-hn-base="1"] .vditor-reset > h4::before {
+    content: counter(hn1) '.' counter(hn2) '.' counter(hn3) '.' counter(hn4) ' ';
+  }
+
+  &[data-hn-base="1"] .vditor-reset > h5::before {
+    content: counter(hn1) '.' counter(hn2) '.' counter(hn3) '.' counter(hn4) '.' counter(hn5) ' ';
+  }
+
+  &[data-hn-base="1"] .vditor-reset > h6::before {
+    content: counter(hn1) '.' counter(hn2) '.' counter(hn3) '.' counter(hn4) '.' counter(hn5) '.' counter(hn6) ' ';
+  }
+
+  // 基准 = 2：h2 -> "1."，h3 -> "1.1" …（h1 不编号）
+  &[data-hn-base="2"] .vditor-reset > h2::before {
+    content: counter(hn2) '. ';
+  }
+
+  &[data-hn-base="2"] .vditor-reset > h3::before {
+    content: counter(hn2) '.' counter(hn3) ' ';
+  }
+
+  &[data-hn-base="2"] .vditor-reset > h4::before {
+    content: counter(hn2) '.' counter(hn3) '.' counter(hn4) ' ';
+  }
+
+  &[data-hn-base="2"] .vditor-reset > h5::before {
+    content: counter(hn2) '.' counter(hn3) '.' counter(hn4) '.' counter(hn5) ' ';
+  }
+
+  &[data-hn-base="2"] .vditor-reset > h6::before {
+    content: counter(hn2) '.' counter(hn3) '.' counter(hn4) '.' counter(hn5) '.' counter(hn6) ' ';
+  }
+
+  // 基准 = 3：h3 -> "1." …（h1/h2 不编号）
+  &[data-hn-base="3"] .vditor-reset > h3::before {
+    content: counter(hn3) '. ';
+  }
+
+  &[data-hn-base="3"] .vditor-reset > h4::before {
+    content: counter(hn3) '.' counter(hn4) ' ';
+  }
+
+  &[data-hn-base="3"] .vditor-reset > h5::before {
+    content: counter(hn3) '.' counter(hn4) '.' counter(hn5) ' ';
+  }
+
+  &[data-hn-base="3"] .vditor-reset > h6::before {
+    content: counter(hn3) '.' counter(hn4) '.' counter(hn5) '.' counter(hn6) ' ';
+  }
+
+  // 基准 = 4
+  &[data-hn-base="4"] .vditor-reset > h4::before {
+    content: counter(hn4) '. ';
+  }
+
+  &[data-hn-base="4"] .vditor-reset > h5::before {
+    content: counter(hn4) '.' counter(hn5) ' ';
+  }
+
+  &[data-hn-base="4"] .vditor-reset > h6::before {
+    content: counter(hn4) '.' counter(hn5) '.' counter(hn6) ' ';
+  }
+
+  // 基准 = 5
+  &[data-hn-base="5"] .vditor-reset > h5::before {
+    content: counter(hn5) '. ';
+  }
+
+  &[data-hn-base="5"] .vditor-reset > h6::before {
+    content: counter(hn5) '.' counter(hn6) ' ';
+  }
+
+  // 基准 = 6
+  &[data-hn-base="6"] .vditor-reset > h6::before {
+    content: counter(hn6) '. ';
+  }
+}
+
+// 左侧大纲：lute ToC 生成嵌套 ul/li，li 内 span[data-target-id] 包裹克隆的标题元素。
+// 计数器挂在 li 上（嵌套 ul 天然形成作用域），编号前缀加在克隆标题的 ::before，与正文一致。
+.vditor-outline.vditor--heading-numbering {
+  .vditor-outline__content {
+    counter-reset: hn1 hn2 hn3 hn4 hn5 hn6;
+  }
+
+  li[data-hn-level="1"] {
+    counter-increment: hn1;
+    counter-reset: hn2 hn3 hn4 hn5 hn6;
+  }
+
+  li[data-hn-level="2"] {
+    counter-increment: hn2;
+    counter-reset: hn3 hn4 hn5 hn6;
+  }
+
+  li[data-hn-level="3"] {
+    counter-increment: hn3;
+    counter-reset: hn4 hn5 hn6;
+  }
+
+  li[data-hn-level="4"] {
+    counter-increment: hn4;
+    counter-reset: hn5 hn6;
+  }
+
+  li[data-hn-level="5"] {
+    counter-increment: hn5;
+    counter-reset: hn6;
+  }
+
+  li[data-hn-level="6"] {
+    counter-increment: hn6;
+  }
+
+  &[data-hn-base="2"] li[data-hn-level="1"] {
+    counter-increment: none;
+    counter-reset: none;
+  }
+
+  &[data-hn-base="3"] li[data-hn-level="1"],
+  &[data-hn-base="3"] li[data-hn-level="2"] {
+    counter-increment: none;
+    counter-reset: none;
+  }
+
+  &[data-hn-base="4"] li[data-hn-level="1"],
+  &[data-hn-base="4"] li[data-hn-level="2"],
+  &[data-hn-base="4"] li[data-hn-level="3"] {
+    counter-increment: none;
+    counter-reset: none;
+  }
+
+  &[data-hn-base="5"] li[data-hn-level="1"],
+  &[data-hn-base="5"] li[data-hn-level="2"],
+  &[data-hn-base="5"] li[data-hn-level="3"],
+  &[data-hn-base="5"] li[data-hn-level="4"] {
+    counter-increment: none;
+    counter-reset: none;
+  }
+
+  &[data-hn-base="6"] li[data-hn-level="1"],
+  &[data-hn-base="6"] li[data-hn-level="2"],
+  &[data-hn-base="6"] li[data-hn-level="3"],
+  &[data-hn-base="6"] li[data-hn-level="4"],
+  &[data-hn-base="6"] li[data-hn-level="5"] {
+    counter-increment: none;
+    counter-reset: none;
+  }
+
+  &[data-hn-base="1"] li[data-hn-level="1"] > span > span:last-child::before {
+    content: counter(hn1) '. ';
+  }
+
+  &[data-hn-base="1"] li[data-hn-level="2"] > span > span:last-child::before {
+    content: counter(hn1) '.' counter(hn2) ' ';
+  }
+
+  &[data-hn-base="1"] li[data-hn-level="3"] > span > span:last-child::before {
+    content: counter(hn1) '.' counter(hn2) '.' counter(hn3) ' ';
+  }
+
+  &[data-hn-base="1"] li[data-hn-level="4"] > span > span:last-child::before {
+    content: counter(hn1) '.' counter(hn2) '.' counter(hn3) '.' counter(hn4) ' ';
+  }
+
+  &[data-hn-base="1"] li[data-hn-level="5"] > span > span:last-child::before {
+    content: counter(hn1) '.' counter(hn2) '.' counter(hn3) '.' counter(hn4) '.' counter(hn5) ' ';
+  }
+
+  &[data-hn-base="1"] li[data-hn-level="6"] > span > span:last-child::before {
+    content: counter(hn1) '.' counter(hn2) '.' counter(hn3) '.' counter(hn4) '.' counter(hn5) '.' counter(hn6) ' ';
+  }
+
+  &[data-hn-base="2"] li[data-hn-level="2"] > span > span:last-child::before {
+    content: counter(hn2) '. ';
+  }
+
+  &[data-hn-base="2"] li[data-hn-level="3"] > span > span:last-child::before {
+    content: counter(hn2) '.' counter(hn3) ' ';
+  }
+
+  &[data-hn-base="2"] li[data-hn-level="4"] > span > span:last-child::before {
+    content: counter(hn2) '.' counter(hn3) '.' counter(hn4) ' ';
+  }
+
+  &[data-hn-base="2"] li[data-hn-level="5"] > span > span:last-child::before {
+    content: counter(hn2) '.' counter(hn3) '.' counter(hn4) '.' counter(hn5) ' ';
+  }
+
+  &[data-hn-base="2"] li[data-hn-level="6"] > span > span:last-child::before {
+    content: counter(hn2) '.' counter(hn3) '.' counter(hn4) '.' counter(hn5) '.' counter(hn6) ' ';
+  }
+
+  &[data-hn-base="3"] li[data-hn-level="3"] > span > span:last-child::before {
+    content: counter(hn3) '. ';
+  }
+
+  &[data-hn-base="3"] li[data-hn-level="4"] > span > span:last-child::before {
+    content: counter(hn3) '.' counter(hn4) ' ';
+  }
+
+  &[data-hn-base="3"] li[data-hn-level="5"] > span > span:last-child::before {
+    content: counter(hn3) '.' counter(hn4) '.' counter(hn5) ' ';
+  }
+
+  &[data-hn-base="3"] li[data-hn-level="6"] > span > span:last-child::before {
+    content: counter(hn3) '.' counter(hn4) '.' counter(hn5) '.' counter(hn6) ' ';
+  }
+
+  &[data-hn-base="4"] li[data-hn-level="4"] > span > span:last-child::before {
+    content: counter(hn4) '. ';
+  }
+
+  &[data-hn-base="4"] li[data-hn-level="5"] > span > span:last-child::before {
+    content: counter(hn4) '.' counter(hn5) ' ';
+  }
+
+  &[data-hn-base="4"] li[data-hn-level="6"] > span > span:last-child::before {
+    content: counter(hn4) '.' counter(hn5) '.' counter(hn6) ' ';
+  }
+
+  &[data-hn-base="5"] li[data-hn-level="5"] > span > span:last-child::before {
+    content: counter(hn5) '. ';
+  }
+
+  &[data-hn-base="5"] li[data-hn-level="6"] > span > span:last-child::before {
+    content: counter(hn5) '.' counter(hn6) ' ';
+  }
+
+  &[data-hn-base="6"] li[data-hn-level="6"] > span > span:last-child::before {
+    content: counter(hn6) '. ';
+  }
+}

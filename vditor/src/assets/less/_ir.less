@@ -195,12 +195,13 @@
     .vditor-block-marker-aligned-host();
   }
 
-  & .vditor-reset > h1.vditor-heading--active:before,
-  & .vditor-reset > h2.vditor-heading--active:before,
-  & .vditor-reset > h3.vditor-heading--active:before,
-  & .vditor-reset > h4.vditor-heading--active:before,
-  & .vditor-reset > h5.vditor-heading--active:before,
-  & .vditor-reset > h6.vditor-heading--active:before {
+  // 标题自动编号开启时，编号占用 ::before，级别徽标让位
+  &:not(.vditor--heading-numbering) .vditor-reset > h1.vditor-heading--active:before,
+  &:not(.vditor--heading-numbering) .vditor-reset > h2.vditor-heading--active:before,
+  &:not(.vditor--heading-numbering) .vditor-reset > h3.vditor-heading--active:before,
+  &:not(.vditor--heading-numbering) .vditor-reset > h4.vditor-heading--active:before,
+  &:not(.vditor--heading-numbering) .vditor-reset > h5.vditor-heading--active:before,
+  &:not(.vditor--heading-numbering) .vditor-reset > h6.vditor-heading--active:before {
     .vditor-block-marker-aligned-before();
     content: 'H1';
   }
@@ -217,23 +218,23 @@
     color: var(--second-color);
   }
 
-  & .vditor-reset > h2.vditor-heading--active:before {
+  &:not(.vditor--heading-numbering) .vditor-reset > h2.vditor-heading--active:before {
     content: 'H2';
   }
 
-  & .vditor-reset > h3.vditor-heading--active:before {
+  &:not(.vditor--heading-numbering) .vditor-reset > h3.vditor-heading--active:before {
     content: 'H3';
   }
 
-  & .vditor-reset > h4.vditor-heading--active:before {
+  &:not(.vditor--heading-numbering) .vditor-reset > h4.vditor-heading--active:before {
     content: 'H4';
   }
 
-  & .vditor-reset > h5.vditor-heading--active:before {
+  &:not(.vditor--heading-numbering) .vditor-reset > h5.vditor-heading--active:before {
     content: 'H5';
   }
 
-  & .vditor-reset > h6.vditor-heading--active:before {
+  &:not(.vditor--heading-numbering) .vditor-reset > h6.vditor-heading--active:before {
     content: 'H6';
   }
 

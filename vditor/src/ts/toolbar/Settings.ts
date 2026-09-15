@@ -44,9 +44,12 @@ import {
     resetGlobalSettings,
     applyEditorSettings,
     applyTypewriterModeClass,
+    applyHeadingNumberingClass,
     TYPEWRITER_MODE_KEY,
+    HEADING_NUMBERING_KEY,
 } from "../util/globalLocalStorageSettings";
 import {getCodeFontFamilyOptions} from "../util/fontFamilyOptions";
+import { syncHeadingNumberingBase } from "../ui/headingNumbering";
 
 const DROPDOWN_OPTIONS_MAP: Record<string, readonly { label: string; value: string }[] | (() => { label: string; value: string }[])> = {
     [FONT_FAMILY_KEY]: FONT_FAMILY_OPTIONS,
@@ -252,6 +255,10 @@ export class Settings extends MenuItem {
                 setGlobalLocalStorageSetting(key, next ? true : undefined);
                 if (key === TYPEWRITER_MODE_KEY) {
                     applyTypewriterModeClass(vditor.element, next);
+                }
+                if (key === HEADING_NUMBERING_KEY) {
+                    applyHeadingNumberingClass(vditor.element, next);
+                    syncHeadingNumberingBase(vditor);
                 }
                 event.preventDefault();
                 event.stopPropagation();
