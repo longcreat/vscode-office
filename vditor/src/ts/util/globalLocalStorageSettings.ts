@@ -58,6 +58,94 @@ export const BOLD_COLOR_KEY = "boldColor";
 export const HTML_EDITOR_LINE_WRAP_KEY = "htmlEditorLineWrap";
 export const TYPEWRITER_MODE_KEY = "typewriterMode";
 export const HEADING_NUMBERING_KEY = "headingNumbering";
+export const HEADING_NUMBERING_STYLE_KEY = "headingNumberingStyle";
+
+/** 编号模板占位符：{c1}十进制 {C1}中文 {A1}大写字母 {a1}小写字母 {R1}大写罗马 {r1}小写罗马，数字为层级（1-6） */
+export type HeadingNumberingStyle = {
+    id: string;
+    label: string;
+    levels: string[];
+};
+
+export const HEADING_NUMBERING_STYLES: HeadingNumberingStyle[] = [
+    {
+        id: "numeric",
+        label: "1. 1.1",
+        levels: [
+            "{c1}. ",
+            "{c1}.{c2} ",
+            "{c1}.{c2}.{c3} ",
+            "{c1}.{c2}.{c3}.{c4} ",
+            "{c1}.{c2}.{c3}.{c4}.{c5} ",
+            "{c1}.{c2}.{c3}.{c4}.{c5}.{c6} ",
+        ],
+    },
+    {
+        id: "chinese",
+        label: "一、（一）1.",
+        levels: ["{C1}、", "（{C2}）", "{c3}. ", "（{c4}）", "{c5}. ", "（{c6}）"],
+    },
+    {
+        id: "chineseHier",
+        label: "一、一.一",
+        levels: [
+            "{C1}、",
+            "{C1}.{c2} ",
+            "{C1}.{c2}.{c3} ",
+            "{C1}.{c2}.{c3}.{c4} ",
+            "{C1}.{c2}.{c3}.{c4}.{c5} ",
+            "{C1}.{c2}.{c3}.{c4}.{c5}.{c6} ",
+        ],
+    },
+    {
+        id: "alpha",
+        label: "A. A.1",
+        levels: [
+            "{A1}. ",
+            "{A1}.{a2} ",
+            "{A1}.{a2}.{a3} ",
+            "{A1}.{a2}.{a3}.{a4} ",
+            "{A1}.{a2}.{a3}.{a4}.{a5} ",
+            "{A1}.{a2}.{a3}.{a4}.{a5}.{a6} ",
+        ],
+    },
+    {
+        id: "roman",
+        label: "I. I.1",
+        levels: [
+            "{R1}. ",
+            "{R1}.{r2} ",
+            "{R1}.{r2}.{r3} ",
+            "{R1}.{r2}.{r3}.{r4} ",
+            "{R1}.{r2}.{r3}.{r4}.{r5} ",
+            "{R1}.{r2}.{r3}.{r4}.{r5}.{r6} ",
+        ],
+    },
+];
+
+/** headingNumberingStyle 设置值：预设 id，或自定义模板对象 {"levels": ["{C1}、", ...]} 的 JSON 字符串 */
+export const resolveHeadingNumberingStyle = (): HeadingNumberingStyle => {
+    const raw = getGlobalLocalStorageSetting<string>(HEADING_NUMBERING_STYLE_KEY) ?? "";
+    if (raw.startsWith("{")) {
+        try {
+            const parsed = JSON.parse(raw);
+            if (parsed && typeof parsed === "object" && Array.isArray(parsed.levels)) {
+                const levels = parsed.levels
+                    .filter((v: unknown): v is string => typeof v === "string")
+                    .slice(0, 6);
+                while (levels.length > 0 && levels.length < 6) {
+                    levels.push(levels[levels.length - 1]);
+                }
+                if (levels.length === 6) {
+                    return { id: "custom", label: "Custom", levels };
+                }
+            }
+        } catch {
+            // fall through to preset lookup
+        }
+    }
+    return HEADING_NUMBERING_STYLES.find((style) => style.id === raw) ?? HEADING_NUMBERING_STYLES[0];
+};
 export const LAST_NON_AUTO_EDITOR_THEME_KEY = "lastNonAutoEditorTheme";
 export const LAST_LIGHT_EDITOR_THEME_KEY = "lastLightEditorTheme";
 export const LAST_DARK_EDITOR_THEME_KEY = "lastDarkEditorTheme";

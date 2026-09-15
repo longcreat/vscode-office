@@ -139,6 +139,8 @@ window.VditorI18n = {
     'pageWidth': 'Ширина страницы',
     'typewriterMode': 'Режим пишущей машинки',
     'headingNumbering': 'Нумерация заголовков',
+    'headingNumberingCustom': 'Настроить…',
+    'headingNumberingCustomTip': 'Шаблоны уровней 1-6 через запятую. Плейсхолдеры: {c1} 1, {C1} 一, {A1} A, {a1} a, {R1} I, {r1} i',
   'boldColor': 'Цвет жирного',
   'boldColorDefault': 'По умолчанию',
   'boldColorPlain': 'Основной текст',

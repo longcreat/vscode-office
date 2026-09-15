@@ -5,6 +5,8 @@
 Markdown Editor:
 
 - Support automatic heading numbering, configurable in the settings panel.
+- Support numbering styles (numeric, Chinese, alpha, roman) and custom templates via the toolbar.
+- Support starting numbering from a specific heading via the context menu.
 - Number the outline entries to stay consistent with the document.
 - Remove the sponsor banner and telemetry.
 

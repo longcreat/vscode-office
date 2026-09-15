@@ -139,6 +139,8 @@ window.VditorI18n = {
     'pageWidth': 'ページ幅',
     'typewriterMode': 'タイプライターモード',
     'headingNumbering': '見出し自動番号',
+    'headingNumberingCustom': 'カスタム…',
+    'headingNumberingCustomTip': 'レベル1-6のテンプレート、カンマ区切り。プレースホルダー: {c1} 1, {C1} 一, {A1} A, {a1} a, {R1} I, {r1} i',
   'boldColor': '太字の色',
   'boldColorDefault': 'デフォルト',
   'boldColorPlain': '本文色',

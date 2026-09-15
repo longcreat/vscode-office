@@ -54,6 +54,11 @@ export async function getToolbar(resPath, onSave = null) {
         "redo",
         "|",
         "find",
+        {
+            name: 'heading-numbering',
+            tip: 'Heading Numbering Style',
+            icon: '<span class="vditor-hn-style-label" data-hn-style-label></span>',
+        },
         "ai-settings",
         "settings"
     ]
@@ -220,11 +225,80 @@ export const createContextMenu = (editor) => {
             case 'insertImage':
                 vscodeEvent.emit('insertImage')
                 break
+            case 'hnStartHere':
+                toggleNumberingAnchor(editor, true)
+                break
+            case 'hnClearAnchor':
+                toggleNumberingAnchor(editor, false)
+                break
             case 'aiPolish':
                 editor.openAIPolishDialog()
                 break
         }
     })
+}
+
+const HN_ANCHOR = '<!-- heading-numbering-start -->'
+
+/**
+ * 在光标所在标题前插入/移除编号起点锚点。
+ * 锚点以独立段落写入 Markdown 源文本（<!-- heading-numbering-start -->），
+ * wysiwyg/ir 编辑往返均会保留（html-block）。
+ */
+const toggleNumberingAnchor = (editor, add) => {
+    const heading = getHeadingAtCursor(editor)
+    if (!heading) return
+    const value = editor.getValue()
+    const id = heading.id
+    if (!id) return
+    // 在 Markdown 源中定位该标题：按 "# " 行匹配标题文本
+    const text = (heading.textContent || '').trim()
+    if (!text) return
+    const level = Number(heading.tagName.substring(1))
+    const marker = '#'.repeat(level)
+    const lines = value.split('\n')
+    let targetLine = -1
+    let inFence = false
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i]
+        if (/^\s*(```|~~~)/.test(line)) { inFence = !inFence; continue }
+        if (inFence) continue
+        if (line.trim() === `${marker} ${text}`) { targetLine = i; break }
+    }
+    if (targetLine < 0) return
+    // 找已存在的锚点行（跳过代码块围栏内）
+    let fence = false
+    let anchorLine = -1
+    for (let i = 0; i < targetLine; i++) {
+        const line = lines[i]
+        if (/^\s*(```|~~~)/.test(line)) { fence = !fence; continue }
+        if (fence) continue
+        if (line.trim() === HN_ANCHOR) { anchorLine = i; break }
+    }
+    if (add) {
+        if (anchorLine >= 0 && anchorLine < targetLine) return
+        lines.splice(targetLine, 0, HN_ANCHOR, '')
+    } else {
+        if (anchorLine < 0) return
+        lines.splice(anchorLine, 1)
+        // 移除锚点后紧跟的空行，避免残留双空行
+        if (lines[anchorLine] !== undefined && lines[anchorLine].trim() === '') {
+            lines.splice(anchorLine, 1)
+        }
+    }
+    editor.setValue(lines.join('\n'))
+    editor.markSaved?.()
+}
+
+const getHeadingAtCursor = (editor) => {
+    const sel = document.getSelection()
+    if (!sel || sel.rangeCount === 0) return null
+    let node = sel.getRangeAt(0).startContainer
+    if (node.nodeType === 3) node = node.parentElement
+    if (!node) return null
+    const root = editor.vditor?.[editor.vditor.currentMode]?.element
+    if (!root || !root.contains(node)) return null
+    return node.closest('h1,h2,h3,h4,h5,h6')
 }
 
 function matchShortcut(hotkey, event) {

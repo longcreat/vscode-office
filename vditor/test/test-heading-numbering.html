@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+
+<head>
+    <meta charset="utf-8">
+    <title>Heading Numbering Test</title>
+    <link rel="stylesheet" href="../../resource/markdown/dist/index.css">
+    <style>
+        html, body { height: 100%; margin: 0; }
+        #vditor { height: 100%; }
+    </style>
+</head>
+
+<body>
+    <div id="vditor"></div>
+    <script src="../../resource/markdown/dist/index.min.js"></script>
+    <script>
+        window.vditor = new Vditor('vditor', {
+            cdn: new URL('../../resource/markdown', location.href).href,
+            mode: 'wysiwyg',
+            toolbar: [
+                'outline', 'headings', '|',
+                'heading-numbering', 'find', 'settings',
+            ],
+            outline: { position: 'left', enable: true },
+            cache: { enable: false },
+            value: window.__TEST_VALUE__ || '## Alpha\n\nbody\n\n### Sub\n\nx\n\n## Beta\n\ny\n',
+        });
+    </script>
+</body>
+
+</html>

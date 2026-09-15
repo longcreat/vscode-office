@@ -141,6 +141,8 @@ window.VditorI18n = {
     'pageWidth': '頁面寬度',
     'typewriterMode': '打字機模式',
     'headingNumbering': '標題自動編號',
+    'headingNumberingCustom': '自訂…',
+    'headingNumberingCustomTip': '1-6 級編號範本，逗號分隔。佔位符：{c1} 1、{C1} 一、{A1} A、{a1} a、{R1} I、{r1} i',
   'boldColor': '粗體顏色',
   'boldColorDefault': '預設',
   'boldColorPlain': '正文色',

@@ -11,6 +11,7 @@ import {EditorThemeToggle} from "./EditorThemeToggle";
 import {Headings} from "./Headings";
 import {Indent} from "./Indent";
 import {Find} from "./Find";
+import {HeadingNumbering} from "./HeadingNumbering";
 import {Info} from "./Info";
 import {InsertAfter} from "./InsertAfter";
 import {InsertBefore} from "./InsertBefore";
@@ -108,6 +109,9 @@ export class Toolbar {
                 break;
             case "find":
                 menuItemObj = new Find(vditor, menuItem);
+                break;
+            case "heading-numbering":
+                menuItemObj = new HeadingNumbering(vditor, menuItem);
                 break;
             case "edit-mode":
                 menuItemObj = new EditMode(vditor, menuItem);
