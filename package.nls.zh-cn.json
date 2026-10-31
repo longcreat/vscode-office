@@ -28,5 +28,6 @@
 	"ext.markdown.reloadFromDisk": "从磁盘重新加载",
 	"ext.markdown.keepLocalVersion": "保留我的版本",
 	"ext.sqlite.webUnsupported": "SQLite 查看仅支持桌面版扩展。",
-	"ext.sqlite.exportDone": "已导出：$1"
+	"ext.sqlite.exportDone": "已导出：$1",
+	"ext.jsonl.webUnsupported": "JSONL 查看仅支持桌面版扩展。"
 }

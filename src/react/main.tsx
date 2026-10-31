@@ -21,6 +21,7 @@ const PsdViewer = lazy(() => import('./view/psd/PsdViewer.tsx'))
 const XmindViewer = lazy(() => import('./view/xmind/XmindViewer.tsx'))
 const Parquet = lazy(() => import('./view/parquet/Parquet.tsx'))
 const Sqlite = lazy(() => import('./view/sqlite/Sqlite.tsx'))
+const JsonViewer = lazy(() => import('./view/json/JsonViewer.tsx'))
 const WebUnsupported = lazy(() => import('./view/WebUnsupported.tsx'))
 
 document.getElementById('_defaultStyles')?.parentNode?.removeChild(document.getElementById('_defaultStyles'))
@@ -74,16 +75,29 @@ export default function App() {
       return <XmindViewer />
     case 'parquet':
       return <Parquet />
+    case 'sqlite':
+      return <Sqlite />
+    case 'json':
+      return <JsonViewer />
     case 'gitHistory':
       return <GitHistory />
     case 'webUnsupported':
       return <WebUnsupported />
-    case 'sqlite':
-      return <Sqlite />
     default:
       return <>{$t('common.officeViewer')}</>
   }
 })()
+  return (
+    <ErrorBoundary>
+      <Suspense fallback={
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
+          <span className="codicon codicon-loading codicon-modifier-spin" style={{ fontSize: 22, color: 'var(--vscode-descriptionForeground)' }} />
+        </div>
+      }>
+        {content}
+      </Suspense>
+    </ErrorBoundary>
+  )
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -94,3 +108,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <App />
   </ConfigProvider>
 )
+

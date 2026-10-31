@@ -24,6 +24,7 @@ export class ReactApp {
     public static async view(webview: vscode.Webview, option: ViewOption) {
         const html = await this.readContent();
         const iconConfig = IconService.getInstance().getWebviewConfig(this.context, webview);
+        // React viewer 资产文件名自带内容 hash，无需 query 破缓存（webview 对带 query 的 module 资源加载不可靠）
         webview.html = this.buildPath(html, webview)
             .replace(`{{configs}}`, JSON.stringify({
                 ...option,

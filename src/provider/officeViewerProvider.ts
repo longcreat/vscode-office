@@ -7,6 +7,7 @@ import { Util } from '../common/util';
 import { handleImage, isImage } from './handlers/imageHanlder';
 import { handleSvg } from './handlers/svgHandler';
 import { handleSqlite } from './sqliteHandler';
+import { handleJsonl } from './jsonlHandler';
 import { isVirtualUri, readUriText } from './handlers/officeContent';
 import { handleCommonEvent } from './compress/commonHandler';
 import { extensionResource, getExtensionResourceRoots, readExtensionText } from '@/common/extensionResource';
@@ -25,6 +26,8 @@ export class OfficeViewerProvider implements vscode.CustomReadonlyEditorProvider
 			vscode.window.registerCustomEditorProvider('cweijan.imageViewer', this, viewOption),
 			vscode.window.registerCustomEditorProvider('cweijan.parquetViewer', this, viewOption),
 			vscode.window.registerCustomEditorProvider('cweijan.sqliteViewer', this, viewOption),
+			vscode.window.registerCustomEditorProvider('cweijan.jsonViewer', this, viewOption),
+			vscode.window.registerCustomEditorProvider('cweijan.jsonlViewer', this, viewOption),
 		];
 	}
 
@@ -45,9 +48,10 @@ export class OfficeViewerProvider implements vscode.CustomReadonlyEditorProvider
 		let route: string;
 		const suffix = getFileSuffix(uri.fsPath);
 		const isSvg = /\.svg$/i.test(suffix);
-		// sqlite 在扩展主进程解析，无需把文件 buffer 传给 webview
+		// sqlite/jsonl 在扩展主进程解析，无需把文件 buffer 传给 webview
 		const isSqlite = /\.(db|sqlite3?|db3)$/i.test(suffix);
-		handleCommonEvent(uri, handler, (isSvg || isSqlite) ? { skipOpen: true } : undefined);
+		const isJsonl = /\.(jsonl|ndjson)$/i.test(suffix);
+		handleCommonEvent(uri, handler, (isSvg || isSqlite || isJsonl) ? { skipOpen: true } : undefined);
 		if (isSvg) {
 			route = 'svg';
 			handleSvg(handler, uri);
@@ -57,6 +61,9 @@ export class OfficeViewerProvider implements vscode.CustomReadonlyEditorProvider
 		} else if (isSqlite) {
 			route = 'sqlite';
 			void handleSqlite(uri, handler);
+		} else if (isJsonl) {
+			route = 'json';
+			void handleJsonl(uri, handler);
 		}
 		switch (suffix) {
 			case '.xlsx':
@@ -98,6 +105,10 @@ export class OfficeViewerProvider implements vscode.CustomReadonlyEditorProvider
 				break;
 			case '.parquet':
 				route = 'parquet';
+				break;
+			case '.json':
+			case '.jsonc':
+				route = 'json';
 				break;
 			case '.htm':
 			case '.html':
