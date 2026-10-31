@@ -26,5 +26,7 @@
 	"ext.markdown.statusBar": "行 $1 字數 $2",
 	"ext.markdown.externalChange": "Markdown 檔案在編輯器外被修改，目前有未儲存的編輯。",
 	"ext.markdown.reloadFromDisk": "從磁碟重新載入",
-	"ext.markdown.keepLocalVersion": "保留我的版本"
+	"ext.markdown.keepLocalVersion": "保留我的版本",
+	"ext.sqlite.webUnsupported": "SQLite 檢視僅支援桌面版擴充功能。",
+	"ext.sqlite.exportDone": "已匯出：$1"
 }

@@ -7,6 +7,26 @@ import { emitFileOfficeOpen, emitVirtualOfficeOpen, isVirtualUri } from '@/provi
 
 const fileSaveTimes: Record<string, number> = {};
 const INTERNAL_SAVE_CHANGE_WINDOW_MS = 1500;
+const fileChangeTimers: Record<string, ReturnType<typeof setTimeout>> = {};
+const FILE_CHANGE_DEBOUNCE_MS = 300;
+const SIZE_STABLE_INTERVAL_MS = 150;
+const SIZE_STABLE_CHECKS = 5;
+
+/** 外部程序写文件不是原子操作，变更事件可能在截断/写入过程中触发，等文件大小稳定后再重载，避免读到半成品 */
+async function waitForFileSizeStable(uri: Uri): Promise<void> {
+    let lastSize = -1;
+    for (let i = 0; i < SIZE_STABLE_CHECKS; i++) {
+        let size = -1;
+        try {
+            size = (await workspace.fs.stat(uri)).size;
+        } catch {
+            return;
+        }
+        if (size > 0 && size === lastSize) return;
+        lastSize = size;
+        await new Promise((resolve) => setTimeout(resolve, SIZE_STABLE_INTERVAL_MS));
+    }
+}
 
 function buildDefaultXlsxUri(uri: Uri): Uri {
     const { dir, name } = parse(uri.fsPath);
@@ -22,7 +42,8 @@ export function shouldSkipFileChange(uri: Uri): boolean {
     return !!(lastSaveTime && Date.now() - lastSaveTime < INTERNAL_SAVE_CHANGE_WINDOW_MS);
 }
 
-function setDirty(handler: Handler, uri: Uri, dirty: boolean) {
+/** 供 sqlite 等主进程侧保存的视图复用标题 dirty 标记 */
+export function setDirty(handler: Handler, uri: Uri, dirty: boolean) {
     const panel = handler.panel;
     const fileName = basename(uri.fsPath);
     panel.title = dirty ? `${fileName}*` : fileName;
@@ -50,7 +71,16 @@ export function handleCommonEvent(uri: Uri, handler: Handler, options?: { skipOp
             vscode.commands.executeCommand('vscode.openWith', uri, "default", side);
         })
     if (!options?.skipOpen) {
-        events.on("init", () => { void send(); }).on("fileChange", () => { void send(); })
+        events
+            .on("init", () => { void send(); })
+            .on("fileChange", () => {
+                const key = uri.toString();
+                clearTimeout(fileChangeTimers[key]);
+                fileChangeTimers[key] = setTimeout(() => {
+                    delete fileChangeTimers[key];
+                    void waitForFileSizeStable(uri).then(() => { void send(); });
+                }, FILE_CHANGE_DEBOUNCE_MS);
+            });
     }
     events
         .on("change", () => {
@@ -106,6 +136,9 @@ export function handleCommonEvent(uri: Uri, handler: Handler, options?: { skipOp
             }
         })
         .on('dispose', () => {
-            delete fileSaveTimes[uri.toString()];
+            const key = uri.toString();
+            delete fileSaveTimes[key];
+            clearTimeout(fileChangeTimers[key]);
+            delete fileChangeTimers[key];
         })
 }

@@ -34,6 +34,10 @@ function createDesktopAssetCopyPlugins(shouldWatch: boolean) {
                     from: ['./node_modules/7z-wasm/7zz.wasm'],
                     to: ['./'],
                 },
+                {
+                    from: ['./node_modules/sql.js/dist/sql-wasm.wasm'],
+                    to: ['./'],
+                },
             ],
         }),
     ];

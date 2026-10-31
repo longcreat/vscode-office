@@ -1,10 +1,12 @@
 import { ReactApp } from '@/common/reactApp';
 import { getFileSuffix } from '@/common/fileSuffix';
+import { basename } from 'path';
 import * as vscode from 'vscode';
 import { Handler } from '../common/handler';
 import { Util } from '../common/util';
 import { handleImage, isImage } from './handlers/imageHanlder';
 import { handleSvg } from './handlers/svgHandler';
+import { handleSqlite } from './sqliteHandler';
 import { isVirtualUri, readUriText } from './handlers/officeContent';
 import { handleCommonEvent } from './compress/commonHandler';
 import { extensionResource, getExtensionResourceRoots, readExtensionText } from '@/common/extensionResource';
@@ -22,6 +24,7 @@ export class OfficeViewerProvider implements vscode.CustomReadonlyEditorProvider
 			vscode.window.registerCustomEditorProvider('cweijan.htmlViewer', this, viewOption),
 			vscode.window.registerCustomEditorProvider('cweijan.imageViewer', this, viewOption),
 			vscode.window.registerCustomEditorProvider('cweijan.parquetViewer', this, viewOption),
+			vscode.window.registerCustomEditorProvider('cweijan.sqliteViewer', this, viewOption),
 		];
 	}
 
@@ -42,13 +45,18 @@ export class OfficeViewerProvider implements vscode.CustomReadonlyEditorProvider
 		let route: string;
 		const suffix = getFileSuffix(uri.fsPath);
 		const isSvg = /\.svg$/i.test(suffix);
-		handleCommonEvent(uri, handler, isSvg ? { skipOpen: true } : undefined);
+		// sqlite 在扩展主进程解析，无需把文件 buffer 传给 webview
+		const isSqlite = /\.(db|sqlite3?|db3)$/i.test(suffix);
+		handleCommonEvent(uri, handler, (isSvg || isSqlite) ? { skipOpen: true } : undefined);
 		if (isSvg) {
 			route = 'svg';
 			handleSvg(handler, uri);
 		} else if (isImage(suffix)) {
 			handleImage(handler, uri, webview);
 			route = 'image';
+		} else if (isSqlite) {
+			route = 'sqlite';
+			void handleSqlite(uri, handler);
 		}
 		switch (suffix) {
 			case '.xlsx':
@@ -105,7 +113,7 @@ export class OfficeViewerProvider implements vscode.CustomReadonlyEditorProvider
 				vscode.commands.executeCommand('vscode.openWith', uri, 'default');
 		}
 		const fileType = suffix.startsWith('.') ? suffix.slice(1) : suffix;
-		if (route) return ReactApp.view(webview, { route });
+		if (route) return ReactApp.view(webview, { route, fileName: basename(uri.fsPath) });
 	}
 
 	private async loadPdfViewer(webview: vscode.Webview) {

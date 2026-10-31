@@ -1,0 +1,584 @@
+body:has(.sqlite-app) {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.sqlite-viewer {
+    --sv-bg: var(--vscode-editor-background, #1e1e1e);
+    --sv-sider-bg: var(--vscode-sideBar-background, #252526);
+    --sv-border: var(--vscode-panel-border, var(--vscode-widget-border, rgba(128, 128, 128, 0.35)));
+    --sv-fg: var(--vscode-foreground, #cccccc);
+    --sv-muted: var(--vscode-descriptionForeground, rgba(204, 204, 204, 0.7));
+    --sv-hover: var(--vscode-list-hoverBackground, rgba(90, 93, 94, 0.31));
+    --sv-active-bg: var(--vscode-list-activeSelectionBackground, #094771);
+    --sv-active-fg: var(--vscode-list-activeSelectionForeground, #ffffff);
+    --sv-accent: var(--vscode-button-background, #0e639c);
+    --sv-accent-fg: var(--vscode-button-foreground, #ffffff);
+    --sv-error: var(--vscode-errorForeground, #f48771);
+    --sv-input-bg: var(--vscode-input-background, #3c3c3c);
+    --sv-input-border: var(--vscode-input-border, rgba(128, 128, 128, 0.35));
+    --sv-badge-bg: color-mix(in srgb, var(--sv-fg) 12%, transparent);
+    --sv-radius: 6px;
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    min-height: 100vh;
+    background: var(--sv-bg);
+    color: var(--sv-fg);
+    font-family: var(--vscode-font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-size: var(--vscode-font-size, 13px);
+    overflow: hidden;
+}
+
+.sqlite-viewer--light {
+    --sv-bg: #ffffff;
+    --sv-sider-bg: #f6f8fa;
+    --sv-border: #d8dee4;
+    --sv-fg: #1f2328;
+    --sv-muted: #656d76;
+    --sv-hover: #eef1f4;
+    --sv-active-bg: #e1e8f0;
+    --sv-active-fg: #1f2328;
+    --sv-accent: #0969da;
+    --sv-accent-fg: #ffffff;
+    --sv-error: #d1242f;
+    --sv-input-bg: #f6f8fa;
+    --sv-input-border: #d0d7de;
+    --sv-badge-bg: #eef1f4;
+}
+
+.sqlite-viewer__body {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+}
+
+.sqlite-viewer__sider {
+    display: flex;
+    flex-direction: column;
+    width: 240px;
+    min-width: 180px;
+    max-width: 360px;
+    background: var(--sv-sider-bg);
+    border-right: 1px solid var(--sv-border);
+}
+
+.sqlite-viewer__sider-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--sv-border);
+    font-weight: 600;
+}
+
+.sqlite-viewer__sider-title {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sqlite-viewer__sider-count {
+    padding: 1px 8px;
+    border-radius: 10px;
+    background: var(--sv-badge-bg);
+    color: var(--sv-muted);
+    font-size: 11px;
+    font-weight: 400;
+}
+
+.sqlite-viewer__list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px 0;
+}
+
+.sqlite-viewer__list-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 6px 12px;
+    border: none;
+    background: transparent;
+    color: var(--sv-fg);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    overflow: hidden;
+
+    &:hover {
+        background: var(--sv-hover);
+    }
+
+    &.sqlite-viewer__list-item--active {
+        background: var(--sv-active-bg);
+        color: var(--sv-active-fg);
+    }
+}
+
+.sqlite-viewer__list-icon {
+    flex: none;
+    color: var(--vscode-charts-teal, #4db6ac);
+}
+
+.sqlite-viewer__list-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sqlite-viewer__list-badge {
+    flex: none;
+    padding: 0 6px;
+    border-radius: 8px;
+    background: var(--sv-badge-bg);
+    color: var(--sv-muted);
+    font-size: 10px;
+}
+
+.sqlite-viewer__main {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+    padding: 12px 16px;
+}
+
+.sqlite-viewer__error {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    border: 1px solid var(--sv-error);
+    border-radius: var(--sv-radius);
+    color: var(--sv-error);
+    word-break: break-all;
+}
+
+.sqlite-viewer__toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.sqlite-viewer__row-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex: none;
+}
+
+.sqlite-viewer__icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--sv-border);
+    border-radius: var(--sv-radius);
+    background: transparent;
+    color: var(--sv-fg);
+    font: inherit;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+        background: var(--sv-hover);
+    }
+
+    &:disabled {
+        color: var(--sv-muted);
+        cursor: default;
+        opacity: 0.5;
+    }
+}
+
+.sqlite-viewer__save-btn:not(:disabled) {
+    border-color: var(--sv-accent);
+    background: var(--sv-accent);
+    color: var(--sv-accent-fg);
+}
+
+.sqlite-viewer__readonly-banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    padding: 6px 12px;
+    border: 1px solid var(--sv-border);
+    border-radius: var(--sv-radius);
+    background: var(--sv-badge-bg);
+    color: var(--sv-muted);
+}
+
+.sqlite-viewer__col-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+.sqlite-viewer__col-icon {
+    color: var(--sv-muted);
+    font-size: 11px;
+}
+
+.sqlite-viewer__cell--editable {
+    cursor: cell;
+}
+
+.sqlite-viewer__editor {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+}
+
+.sqlite-viewer__editor-input {
+    flex: 1;
+    min-width: 0;
+}
+
+.sqlite-viewer__editor-null {
+    flex: none;
+    color: var(--sv-muted);
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.sqlite-viewer__dirty-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--vscode-charts-yellow, #cca700);
+}
+
+.sqlite-viewer__refreshing {
+    color: var(--sv-muted);
+}
+
+.sqlite-viewer__tabs {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--sv-border);
+}
+
+.sqlite-viewer__tab {
+    padding: 5px 16px;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--sv-muted);
+    font: inherit;
+    cursor: pointer;
+
+    &:hover {
+        color: var(--sv-fg);
+    }
+
+    &.sqlite-viewer__tab--active {
+        color: var(--sv-fg);
+        border-bottom-color: var(--sv-accent);
+        font-weight: 600;
+    }
+}
+
+.sqlite-viewer__col-title--sortable {
+    cursor: pointer;
+
+    &:hover {
+        color: var(--sv-accent);
+    }
+}
+
+.sqlite-viewer__sort-arrow {
+    font-size: 10px;
+    color: var(--sv-accent);
+}
+
+.sqlite-viewer__sql-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+}
+
+.sqlite-viewer__history {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    max-height: 260px;
+    overflow-y: auto;
+    border: 1px solid var(--sv-border);
+    border-radius: var(--sv-radius);
+    background: var(--sv-bg);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.sqlite-viewer__history-empty {
+    padding: 10px 12px;
+    color: var(--sv-muted);
+    font-size: 12px;
+}
+
+.sqlite-viewer__history-item {
+    display: block;
+    width: 100%;
+    padding: 6px 12px;
+    border: none;
+    background: transparent;
+    color: var(--sv-fg);
+    font: inherit;
+    font-family: var(--vscode-editor-font-family, 'Consolas', monospace);
+    text-align: left;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:hover {
+        background: var(--sv-hover);
+    }
+}
+
+.sqlite-viewer__export {
+    display: inline-flex;
+    gap: 4px;
+}
+
+.sqlite-viewer__export-btn {
+    padding: 1px 8px;
+    border: 1px solid var(--sv-border);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--sv-muted);
+    font-size: 11px;
+    cursor: pointer;
+
+    &:hover {
+        color: var(--sv-fg);
+        border-color: var(--sv-accent);
+    }
+}
+
+.sqlite-viewer__cell-view {
+    max-height: 60vh;
+    overflow: auto;
+    margin: 0;
+    padding: 12px;
+    border-radius: var(--sv-radius);
+    background: var(--sv-input-bg);
+    font-family: var(--vscode-editor-font-family, 'Consolas', monospace);
+    font-size: 12px;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.sqlite-viewer__cell-view-btn {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 4px;
+    padding: 0 2px;
+    border: none;
+    background: transparent;
+    color: var(--sv-muted);
+    cursor: pointer;
+    font-size: 12px;
+
+    &:hover {
+        color: var(--sv-accent);
+    }
+}
+
+.sqlite-viewer__structure {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.sqlite-viewer__structure-section {
+    margin-bottom: 18px;
+
+    h4 {
+        margin: 0 0 8px;
+        color: var(--sv-muted);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+}
+
+.sqlite-viewer__ddl {
+    margin: 0;
+    padding: 12px;
+    border-radius: var(--sv-radius);
+    background: var(--sv-input-bg);
+    font-family: var(--vscode-editor-font-family, 'Consolas', monospace);
+    font-size: 12px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.sqlite-viewer__structure-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+}
+
+.sqlite-viewer__structure-dim {
+    color: var(--sv-muted);
+}
+
+.sqlite-viewer__sql-input {
+    flex: 1;
+    min-width: 0;
+    font-family: var(--vscode-editor-font-family, 'Consolas', monospace);
+
+    textarea {
+        font-family: inherit !important;
+        min-height: 32px !important;
+    }
+}
+
+.sqlite-viewer__run-btn,
+.sqlite-viewer__theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex: none;
+    height: 32px;
+    border: 1px solid var(--sv-accent);
+    border-radius: var(--sv-radius);
+    background: var(--sv-accent);
+    color: var(--sv-accent-fg);
+    font: inherit;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+        opacity: 0.9;
+    }
+
+    &:disabled {
+        border-color: var(--sv-border);
+        background: transparent;
+        color: var(--sv-muted);
+        cursor: default;
+    }
+}
+
+.sqlite-viewer__run-btn {
+    padding: 0 14px;
+}
+
+.sqlite-viewer__theme-toggle {
+    border-color: var(--sv-border);
+    background: transparent;
+    color: var(--sv-fg);
+    padding: 0 10px;
+}
+
+.sqlite-viewer__meta {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 6px;
+    color: var(--sv-muted);
+    font-size: 12px;
+}
+
+.sqlite-viewer__table-wrap {
+    flex: 1;
+    min-height: 0;
+}
+
+.sqlite-viewer__cell {
+    white-space: pre;
+}
+
+.sqlite-viewer__null {
+    color: var(--sv-muted);
+    font-style: italic;
+}
+
+.sqlite-viewer__footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 8px;
+}
+
+.sqlite-viewer__pager {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.sqlite-viewer__pager-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border: 1px solid var(--sv-border);
+    border-radius: var(--sv-radius);
+    background: transparent;
+    color: var(--sv-fg);
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+        background: var(--sv-hover);
+    }
+
+    &:disabled {
+        color: var(--sv-muted);
+        cursor: default;
+        opacity: 0.5;
+    }
+}
+
+.sqlite-viewer__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: color-mix(in srgb, var(--sv-bg) 75%, transparent);
+}
+
+.sqlite-viewer .sqlite-table {
+    .ant-table {
+        background: transparent;
+        color: var(--sv-fg);
+    }
+
+    .ant-table-thead > tr > th {
+        background: var(--sv-badge-bg);
+        color: var(--sv-fg);
+        border-bottom: 1px solid var(--sv-border);
+    }
+
+    .ant-table-tbody > tr > td {
+        border-bottom: 1px solid var(--sv-border);
+    }
+
+    .ant-table-tbody > tr:hover > td {
+        background: var(--sv-hover);
+    }
+}

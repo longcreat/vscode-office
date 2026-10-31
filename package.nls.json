@@ -26,5 +26,7 @@
 	"ext.markdown.statusBar": "Line $1 Count $2",
 	"ext.markdown.externalChange": "This Markdown file was modified outside the editor while you have unsaved changes.",
 	"ext.markdown.reloadFromDisk": "Reload from disk",
-	"ext.markdown.keepLocalVersion": "Keep my version"
+	"ext.markdown.keepLocalVersion": "Keep my version",
+	"ext.sqlite.webUnsupported": "SQLite viewing requires the desktop extension.",
+	"ext.sqlite.exportDone": "Exported: $1"
 }
