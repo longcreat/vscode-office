@@ -134,12 +134,32 @@
   .language-mermaid {
     max-width: 100%;
     margin-bottom: 0;
+    padding: 10px;
     overflow-x: auto;
     overflow-y: hidden;
-    background-color: var(--mermaid-bg, var(--toolbar-background-color, var(--bg-color, #fff)));
+    // 透明背景 + 彩色虚线外框：不再随主题变量出现实底色块
+    background-color: transparent;
+    border: 1px dashed var(--mm-chrome-accent, var(--link-color, #0969da));
+    border-radius: 8px;
+    box-sizing: border-box;
 
     svg {
       max-width: none;
+    }
+
+    // mermaid 个别主题会自带背景 rect，一并透明化
+    svg rect.background {
+      fill: transparent !important;
+    }
+
+    // subgraph 在 SVG 内部画 cluster 填充矩形（颜色来自主题 clusterBkg），
+    // 同样透明化并改为彩色虚线描边，与外层框风格一致
+    svg g.cluster > rect,
+    svg .cluster > rect {
+      fill: transparent !important;
+      stroke: var(--mm-chrome-accent, var(--link-color, #0969da)) !important;
+      stroke-dasharray: 4 3;
+      stroke-width: 1px;
     }
   }
 }
