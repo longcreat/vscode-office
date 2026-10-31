@@ -23,5 +23,8 @@
 	"ext.markdown.customAiUrlRequired": "사용자 지정 AI: API URL이 필요합니다.",
 	"ext.markdown.customAiPolishFailed": "사용자 지정 AI 다듬기 실패: $1",
 	"ext.markdown.selectImage": "이미지 선택",
-	"ext.markdown.statusBar": "줄 $1 글자 수 $2"
+	"ext.markdown.statusBar": "줄 $1 글자 수 $2",
+	"ext.markdown.externalChange": "이 Markdown 파일이 편집기 외부에서 수정되었으며 저장하지 않은 변경 사항이 있습니다.",
+	"ext.markdown.reloadFromDisk": "디스크에서 다시 로드",
+	"ext.markdown.keepLocalVersion": "내 버전 유지"
 }

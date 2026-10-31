@@ -23,5 +23,8 @@
 	"ext.markdown.customAiUrlRequired": "自定义 AI：API URL 为必填项。",
 	"ext.markdown.customAiPolishFailed": "自定义 AI 润色失败：$1",
 	"ext.markdown.selectImage": "选择图片",
-	"ext.markdown.statusBar": "行 $1 字数 $2"
+	"ext.markdown.statusBar": "行 $1 字数 $2",
+	"ext.markdown.externalChange": "Markdown 文件在编辑器外被修改，当前有未保存的编辑。",
+	"ext.markdown.reloadFromDisk": "从磁盘重新加载",
+	"ext.markdown.keepLocalVersion": "保留我的版本"
 }

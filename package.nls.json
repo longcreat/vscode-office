@@ -23,5 +23,8 @@
 	"ext.markdown.customAiUrlRequired": "Custom AI: API URL is required.",
 	"ext.markdown.customAiPolishFailed": "Custom AI Polish failed: $1",
 	"ext.markdown.selectImage": "Select Image",
-	"ext.markdown.statusBar": "Line $1 Count $2"
+	"ext.markdown.statusBar": "Line $1 Count $2",
+	"ext.markdown.externalChange": "This Markdown file was modified outside the editor while you have unsaved changes.",
+	"ext.markdown.reloadFromDisk": "Reload from disk",
+	"ext.markdown.keepLocalVersion": "Keep my version"
 }

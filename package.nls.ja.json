@@ -23,5 +23,8 @@
 	"ext.markdown.customAiUrlRequired": "カスタム AI: API URL は必須です。",
 	"ext.markdown.customAiPolishFailed": "カスタム AI 校正に失敗しました: $1",
 	"ext.markdown.selectImage": "画像を選択",
-	"ext.markdown.statusBar": "行 $1 文字数 $2"
+	"ext.markdown.statusBar": "行 $1 文字数 $2",
+	"ext.markdown.externalChange": "この Markdown ファイルがエディター外部で変更されました。未保存の変更があります。",
+	"ext.markdown.reloadFromDisk": "ディスクから再読み込み",
+	"ext.markdown.keepLocalVersion": "自分のバージョンを保持"
 }

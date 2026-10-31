@@ -23,5 +23,8 @@
 	"ext.markdown.customAiUrlRequired": "Пользовательский ИИ: требуется URL API.",
 	"ext.markdown.customAiPolishFailed": "Ошибка пользовательского ИИ-редактирования: $1",
 	"ext.markdown.selectImage": "Выбрать изображение",
-	"ext.markdown.statusBar": "Строка $1 Символов $2"
+	"ext.markdown.statusBar": "Строка $1 Символов $2",
+	"ext.markdown.externalChange": "Этот Markdown-файл был изменён вне редактора при наличии несохранённых изменений.",
+	"ext.markdown.reloadFromDisk": "Перезагрузить с диска",
+	"ext.markdown.keepLocalVersion": "Оставить мою версию"
 }

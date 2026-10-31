@@ -222,6 +222,44 @@ export class MarkdownEditorProvider implements vscode.CustomTextEditorProvider {
             content = updatedText;
             this.updateCount(content)
             handler.emit("update", updatedText)
+        }).on("fileChange", async () => {
+            let diskText: string;
+            try {
+                diskText = new TextDecoder('utf-8').decode(await vscode.workspace.fs.readFile(uri));
+            } catch {
+                return;
+            }
+            const diskContent = diskText.replace(/\r/g, '');
+            if (diskContent === content) {
+                // echo of our own save: flush/autosave wrote the same content back to disk
+                return;
+            }
+            if (!document.isDirty && pendingDocumentSync === undefined) {
+                // no unsaved edits: sync the VS Code document model, then push to the webview
+                await this.updateTextDocument(document, diskText);
+                content = diskContent;
+                this.updateCount(content);
+                handler.emit("update", diskContent);
+                return;
+            }
+            // unsaved edits plus a different disk version: prompt instead of clobbering
+            // either side on the next save
+            const reloadLabel = i18n('ext.markdown.reloadFromDisk');
+            const keepLabel = i18n('ext.markdown.keepLocalVersion');
+            const choice = await vscode.window.showInformationMessage(
+                i18n('ext.markdown.externalChange'), reloadLabel, keepLabel);
+            if (choice !== reloadLabel) {
+                return;
+            }
+            if (documentSyncTimer) {
+                clearTimeout(documentSyncTimer);
+                documentSyncTimer = undefined;
+            }
+            pendingDocumentSync = undefined;
+            content = diskContent;
+            await this.updateTextDocument(document, diskText);
+            this.updateCount(content);
+            handler.emit("update", diskContent);
         }).on("command", (command) => {
             vscode.commands.executeCommand(command)
         }).on("openLink", async (linkUri: string) => {
@@ -353,8 +391,14 @@ export class MarkdownEditorProvider implements vscode.CustomTextEditorProvider {
             vscode.Uri.file(getWorkspacePath(folderPath)) : folderPath;
         const baseUrl = webview.asWebviewUri(basePath).toString().replace(/\?.+$/, '').replace('https://git', 'https://file');
         const indexHtml = await readExtensionText(this.context, 'resource', 'markdown', 'index.html');
+        // 相对 js/css 引用追加版本参数破缓存，避免扩展更新后 webview 仍加载旧脚本
+        const extensionVersion = String(this.context.extension.packageJSON.version ?? Date.now());
+        const cacheBustedHtml = indexHtml.replace(
+            /((?:src|href)=["'])([^"']+?\.(?:js|css))(?:\?[^"']*)?(["'])/gi,
+            `$1$2?v=${extensionVersion}$3`,
+        );
         webview.html = Util.buildPath(
-            indexHtml.replace("{{baseUrl}}", baseUrl), webview, contextUri
+            cacheBustedHtml.replace("{{baseUrl}}", baseUrl), webview, contextUri
         );
     }
 

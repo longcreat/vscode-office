@@ -23,5 +23,8 @@
 	"ext.markdown.customAiUrlRequired": "IA personnalisée : l'URL de l'API est requise.",
 	"ext.markdown.customAiPolishFailed": "Échec de la correction IA personnalisée : $1",
 	"ext.markdown.selectImage": "Sélectionner une image",
-	"ext.markdown.statusBar": "Ligne $1 Caractères $2"
+	"ext.markdown.statusBar": "Ligne $1 Caractères $2",
+	"ext.markdown.externalChange": "Ce fichier Markdown a été modifié en dehors de l'éditeur alors que des modifications non enregistrées existent.",
+	"ext.markdown.reloadFromDisk": "Recharger depuis le disque",
+	"ext.markdown.keepLocalVersion": "Conserver ma version"
 }

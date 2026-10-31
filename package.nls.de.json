@@ -23,5 +23,8 @@
 	"ext.markdown.customAiUrlRequired": "Benutzerdefinierte AI: API-URL ist erforderlich.",
 	"ext.markdown.customAiPolishFailed": "Benutzerdefinierte AI-Korrektur fehlgeschlagen: $1",
 	"ext.markdown.selectImage": "Bild auswählen",
-	"ext.markdown.statusBar": "Zeile $1 Zeichen $2"
+	"ext.markdown.statusBar": "Zeile $1 Zeichen $2",
+	"ext.markdown.externalChange": "Diese Markdown-Datei wurde außerhalb des Editors geändert, während ungespeicherte Änderungen vorliegen.",
+	"ext.markdown.reloadFromDisk": "Von Datenträger neu laden",
+	"ext.markdown.keepLocalVersion": "Meine Version behalten"
 }
