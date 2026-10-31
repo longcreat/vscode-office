@@ -9,6 +9,7 @@ export const codeRender = (element: HTMLElement) => {
         }
         if (e.classList.contains("language-mermaid") ||
             e.classList.contains("language-plantuml") ||
+            e.classList.contains("language-svg") ||
             e.classList.contains("language-math")) {
             return;
         }

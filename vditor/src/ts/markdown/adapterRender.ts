@@ -11,3 +11,7 @@ export const plantumlRenderAdapter = {
     getCode: (el: Element) => el.textContent,
     getElements: (el: HTMLElement | Document) => el.querySelectorAll(".language-plantuml"),
 };
+export const svgRenderAdapter = {
+    getCode: (el: Element) => el.textContent,
+    getElements: (el: HTMLElement | Document) => el.querySelectorAll(".language-svg"),
+};

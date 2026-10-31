@@ -1,0 +1,108 @@
+.vditor-svg-host {
+  position: relative;
+  max-width: 100%;
+  margin-bottom: 16px;
+  --svg-chrome-fg: var(--front-color, #24292e);
+  --svg-chrome-accent: var(--list-hover-color, var(--link-color, #0969da));
+  --svg-chrome-trigger-bg: var(--cm-lang-trigger-bg, var(--second-bg-color, color-mix(in srgb, var(--front-color, #24292e) 12%, var(--bg-color, #fff))));
+  --svg-chrome-hover-bg: color-mix(in srgb, var(--svg-chrome-fg) 10%, var(--svg-chrome-trigger-bg));
+
+  .language-svg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    margin-bottom: 0;
+    padding: 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    background-color: transparent;
+    border: 1px dashed var(--svg-chrome-accent, var(--link-color, #0969da));
+    border-radius: 8px;
+    box-sizing: border-box;
+    text-align: center;
+
+    svg {
+      display: inline-block;
+      max-width: 100%;
+      height: auto;
+      vertical-align: middle;
+    }
+  }
+}
+
+.vditor-svg-chrome {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  width: auto;
+  pointer-events: none;
+}
+
+.vditor-svg-chrome__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 0;
+  padding: 6px 8px 0;
+  background: transparent;
+  border: none;
+  pointer-events: none;
+}
+
+.vditor-svg-chrome__spacer {
+  flex: 1 1 auto;
+}
+
+.vditor-svg-chrome__actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+.vditor-svg-chrome__copy-btn {
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  height: 28px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 8px;
+  background: var(--svg-chrome-trigger-bg);
+  color: var(--svg-chrome-fg);
+  line-height: 1;
+  cursor: pointer;
+  pointer-events: auto;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease, visibility 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: var(--svg-chrome-hover-bg);
+  }
+}
+
+.vditor-svg-host:hover .vditor-svg-chrome__copy-btn {
+  opacity: 1;
+  visibility: visible;
+}
+
+.vditor-svg-chrome__copy-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  color: var(--svg-chrome-fg);
+
+  .codicon {
+    font-size: 16px;
+    line-height: 1;
+  }
+}

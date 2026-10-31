@@ -290,7 +290,8 @@
 
     .language-math,
     .language-plantuml,
-    .language-mermaid {
+    .language-mermaid,
+    .language-svg {
       margin-bottom: 16px;
     }
 
@@ -299,9 +300,12 @@
       cursor: context-menu;
     }
 
-    .language-mermaid {
+    .language-mermaid,
+    .language-svg {
       text-align: center;
-      background-color: var(--mermaid-bg, var(--toolbar-background-color, #fff));
+      // 不填充背景：背景色随主题变量（如 --toolbar-background-color）会出现突兀色块，
+      // 统一改为透明，外框由 _mermaid.less / _svg.less 的虚线描边提供
+      background-color: transparent !important;
     }
 
     // Inline math source code is an internal sync channel, should never show.
@@ -331,10 +335,13 @@
       }
     }
 
-    svg {
+    svg:not([width]):not([height]) {
       height: auto;
       width: auto;
-      stroke-width: initial;
+    }
+
+    svg {
+      max-width: 100%;
     }
 
     p:last-child,

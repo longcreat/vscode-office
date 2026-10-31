@@ -27,6 +27,7 @@ import { stopHandledCodeMirrorKeymap, vditorCodeMirrorSetup } from "./codeMirror
 import { mathRender } from "../markdown/mathRender";
 import { mermaidRender } from "../markdown/mermaidRender";
 import { plantumlRender } from "../markdown/plantumlRender";
+import { svgRender } from "../markdown/svgRender";
 import {
     deactivateInlineMathEditorsInScope,
     flushInlineMathToSyncCode,
@@ -42,7 +43,7 @@ export const CM_BLOCK_CLASS = "vditor-code-block--cm";
 export const CM_EDITING_CLASS = "vditor-cm-block--editing";
 export const CM_SPLIT_CLASS = "vditor-cm-block--split";
 const CM_BLOCK_DATA_TYPES = new Set(["code-block", "math-block"]);
-const SPECIAL_LANGUAGES = ["mermaid", "plantuml", "math"];
+const SPECIAL_LANGUAGES = ["mermaid", "plantuml", "math", "svg"];
 /** 视口内同时挂载 CodeMirror 的上限（参考 Milkdown 25 块文档 <15 个 CM 实例） */
 const LAZY_CM_MAX_MOUNTED = 15;
 /** 视口外扩范围，与 Milkdown 一致 */
@@ -603,13 +604,13 @@ const resetPreviewRenderElement = (
         return mathEl;
     }
     let codeEl = preview.querySelector(
-        language === "plantuml" || language === "mermaid"
+        language === "plantuml" || language === "mermaid" || language === "svg"
             ? `div.language-${language}, code.language-${language}`
             : "code",
     ) as HTMLElement | null;
     if (!codeEl) {
         codeEl = document.createElement(
-            language === "plantuml" || language === "mermaid" ? "div" : "code",
+            language === "plantuml" || language === "mermaid" || language === "svg" ? "div" : "code",
         );
         preview.replaceChildren(codeEl);
     }
@@ -624,6 +625,10 @@ const resetPreviewRenderElement = (
         codeEl.classList.remove("vditor-reset--error");
     } else if (language === "plantuml") {
         codeEl.removeAttribute("data-plantuml");
+        codeEl.classList.remove("vditor-reset--error");
+    } else if (language === "svg") {
+        codeEl.removeAttribute("data-vditor-svg-processed");
+        codeEl.removeAttribute("data-svg");
         codeEl.classList.remove("vditor-reset--error");
     }
     codeEl.textContent = source;
@@ -663,6 +668,8 @@ const rerenderSpecialPreview = (preview: HTMLElement, vditor: IVditor, source?: 
         plantumlRender(preview, vditor.options.cdn, vditor);
     } else if (language === "math") {
         mathRender(preview, { cdn: vditor.options.cdn, math: vditor.options.preview.math });
+    } else if (language === "svg") {
+        svgRender(preview, vditor);
     }
     preview.setAttribute("data-render", "1");
 };
@@ -1985,7 +1992,7 @@ const sanitizePreviewCodeBlockClone = (
     liveBlock: HTMLElement | undefined,
 ) => {
     removeBlockPreviews(cloneBlock);
-    cloneBlock.querySelectorAll(".vditor-cm-chrome, .cm-editor, .vditor-mermaid-chrome, .vditor-plantuml-chrome").forEach((el) => {
+    cloneBlock.querySelectorAll(".vditor-cm-chrome, .cm-editor, .vditor-mermaid-chrome, .vditor-plantuml-chrome, .vditor-svg-chrome").forEach((el) => {
         el.remove();
     });
     syncBlockSourceFromLive(cloneBlock, liveBlock);
@@ -2107,7 +2114,7 @@ const sanitizeCopyBlockClone = (
 
 const stripCopyFragmentChrome = (root: ParentNode) => {
     (root as HTMLElement).querySelectorAll(
-        ".vditor-cm-chrome, .vditor-mermaid-chrome, .vditor-plantuml-chrome, .cm-editor",
+        ".vditor-cm-chrome, .vditor-mermaid-chrome, .vditor-plantuml-chrome, .vditor-svg-chrome, .cm-editor",
     ).forEach((el) => {
         el.remove();
     });

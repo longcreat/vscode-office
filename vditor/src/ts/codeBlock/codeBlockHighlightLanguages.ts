@@ -10,6 +10,7 @@ const languageMap = buildCodeMirrorLanguageMap();
 /** DOM / Lute 语言名 → CodeMirror 高亮语言名 */
 const HIGHLIGHT_LANGUAGE_ALIASES: Record<string, string> = {
     math: "latex",
+    svg: "html",
 };
 
 const PLANTUML_KEYWORDS =

@@ -158,7 +158,7 @@ const buildStyledHtmlForRange = (view: EditorView, from: number, to: number): st
     return lineHtml.join("<br>");
 };
 
-const SKIP_PRE_STYLE_LANGUAGES = ["markdown", "mermaid", "plantuml", "math", "latex"];
+const SKIP_PRE_STYLE_LANGUAGES = ["markdown", "mermaid", "plantuml", "svg", "math", "latex"];
 
 const wrapCodeCopyHtml = (innerHtml: string, languageName: string, view: EditorView): string => {
     const langClass = languageName ? ` class="language-${languageName}"` : "";

@@ -6,6 +6,8 @@ const CLEANUP_SELECTOR = [
     '[data-type$="-close-marker"]',
     '.vditor-cm-chrome',
     '.vditor-mermaid-chrome',
+    '.vditor-plantuml-chrome',
+    '.vditor-svg-chrome',
     '.vditor-hint',
     '.cm-tooltip',
     '.cm-cursor',

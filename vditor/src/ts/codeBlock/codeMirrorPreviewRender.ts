@@ -21,6 +21,7 @@ const isPreviewCodeElement = (code: HTMLElement) => {
     }
     if (code.classList.contains("language-mermaid") ||
         code.classList.contains("language-plantuml") ||
+        code.classList.contains("language-svg") ||
         code.classList.contains("language-math")) {
         return false;
     }

@@ -16,7 +16,7 @@ export abstract class Constants {
     "insert-before", "upload", "table"];
   /** CodeMirror color theme ids (see setCodeTheme). */
   public static readonly CODE_THEME: string[] = CM_THEME_IDS;
-  public static readonly CODE_LANGUAGES: string[] = ["mermaid", "plantuml", "apache",
+  public static readonly CODE_LANGUAGES: string[] = ["mermaid", "plantuml", "svg", "apache",
     "js", "ts", "html",
     // common
     "properties", "apache", "bash", "c", "csharp", "cpp", "css", "coffeescript", "diff", "go", "xml", "http",

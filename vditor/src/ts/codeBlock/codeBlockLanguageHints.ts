@@ -97,6 +97,11 @@ const buildLanguageEntries = (): CodeMirrorLanguageEntry[] => {
             terms: [...terms],
         });
     }
+    entries.push(
+        { canonical: "SVG", terms: ["SVG", "svg"] },
+        { canonical: "Mermaid", terms: ["Mermaid", "mermaid"] },
+        { canonical: "PlantUML", terms: ["PlantUML", "plantuml", "puml"] },
+    );
     return entries;
 };
 
@@ -110,6 +115,10 @@ const PLAIN_TEXT_LANGUAGE_TERMS = ["plain text", "plaintext", "plain", "text"];
 export const toCodeBlockLanguageName = (displayName: string): string => {
     if (displayName === getPlainTextLanguageLabel() || displayName === "Plain Text") {
         return "";
+    }
+    const lower = displayName.trim().toLowerCase();
+    if (lower === "svg" || lower === "mermaid" || lower === "plantuml") {
+        return lower;
     }
     return displayName;
 };

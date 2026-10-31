@@ -272,6 +272,12 @@ class Undo {
                     const sourceElement = item.previousElementSibling?.firstElementChild;
                     item.firstElementChild.innerHTML = sourceElement?.innerHTML || "";
                     item.setAttribute("data-render", "2");
+                } else if (item.firstElementChild.classList.contains("language-svg")) {
+                    item.firstElementChild.removeAttribute("data-vditor-svg-processed");
+                    item.firstElementChild.removeAttribute("data-svg");
+                    const sourceElement = item.previousElementSibling?.firstElementChild;
+                    item.firstElementChild.innerHTML = sourceElement?.innerHTML || "";
+                    item.setAttribute("data-render", "2");
                 } else if (item.firstElementChild.classList.contains("language-math")) {
                     item.setAttribute("data-render", "2");
                     item.firstElementChild.textContent = item.firstElementChild.getAttribute("data-math");
