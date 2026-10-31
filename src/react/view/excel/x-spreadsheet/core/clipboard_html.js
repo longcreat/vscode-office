@@ -168,10 +168,15 @@ function styleToCss(style, defaultStyle) {
     const right = borderSideToCss(border.right);
     const bottom = borderSideToCss(border.bottom);
     const left = borderSideToCss(border.left);
-    if (top) parts.push(`border-top:${top}`);
-    if (right) parts.push(`border-right:${right}`);
-    if (bottom) parts.push(`border-bottom:${bottom}`);
-    if (left) parts.push(`border-left:${left}`);
+    // 四边一致时输出 border 简写：飞书等粘贴目标对逐边写法的解析支持较差
+    if (top && top === right && right === bottom && bottom === left) {
+      parts.push(`border:${top}`);
+    } else {
+      if (top) parts.push(`border-top:${top}`);
+      if (right) parts.push(`border-right:${right}`);
+      if (bottom) parts.push(`border-bottom:${bottom}`);
+      if (left) parts.push(`border-left:${left}`);
+    }
   }
   return parts.join(';');
 }
@@ -219,7 +224,8 @@ export function formatHtmlClipboard(data, range) {
     rows.push(rowHtml);
   }
 
-  const table = `<table>${rows.join('')}</table>`;
+  // border-collapse + tbody：飞书对这种结构化表格 HTML 的还原度最好
+  const table = `<table style="border-collapse:collapse;"><tbody>${rows.join('')}</tbody></table>`;
   return `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>${table}</body></html>`;
 }
 

@@ -1,4 +1,5 @@
 import { createMarkdownValueReader } from "./imagePath.js";
+import { copyAsLark } from "./larkCopy.js";
 
 function loadRes(url) {
     return fetch(url).then(r => r.text())
@@ -56,8 +57,7 @@ export async function getToolbar(resPath, onSave = null) {
         "find",
         {
             name: 'heading-numbering',
-            tip: 'Heading Numbering Style',
-            icon: '<span class="vditor-hn-style-label" data-hn-style-label></span>',
+            icon: codicon('list-ordered'),
         },
         "ai-settings",
         "settings"
@@ -199,6 +199,9 @@ export const createContextMenu = (editor) => {
                 break
             case 'copyAsHtml':
                 copyHtml(getSelectedHtml() || editor.getHTML())
+                break
+            case 'copyAsLark':
+                void copyAsLark(editor)
                 break
             case 'copyAsPlainText':
                 copyPlainText(getSelectedPlainText() || htmlToPlainText(editor.getHTML()))

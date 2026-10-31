@@ -5,9 +5,9 @@
     <meta charset='utf-8'>
     <title>Markdown Editor</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <base href="{{baseUrl}}/">
     <link rel="stylesheet" href="dist/index.css" />
     <link rel="stylesheet" href="index.css" />
-    <base href="{{baseUrl}}/">
 </head>
 
 <body>
@@ -36,6 +36,12 @@
                     <span class="codicon codicon-code"></span>
                 </span>
                 <span class="vditor-context-menu__label">Copy as HTML</span>
+            </button>
+            <button class="vditor-context-menu__item" type="button" data-action="copyAsLark" role="menuitem">
+                <span class="vditor-context-menu__icon" aria-hidden="true">
+                    <span class="codicon codicon-send"></span>
+                </span>
+                <span class="vditor-context-menu__label">Copy as Lark (Feishu)</span>
             </button>
             <button class="vditor-context-menu__item" type="button" data-action="copyAsPlainText" role="menuitem">
                 <span class="vditor-context-menu__icon" aria-hidden="true">

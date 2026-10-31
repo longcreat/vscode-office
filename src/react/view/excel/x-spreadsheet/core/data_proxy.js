@@ -634,11 +634,47 @@ export default class DataProxy {
     this.clipboard.copy(this.selector.range);
   }
 
+  /** 选区内实际有内容区域的边界（含完整合并单元格），用于系统剪贴板复制，避免把补底空行列带进飞书等粘贴目标 */
+  trimmedCopyRange() {
+    const { sri, eri, sci, eci } = this.selector.range;
+    let lastRow = -1;
+    let lastCol = -1;
+    for (let ri = sri; ri <= eri; ri += 1) {
+      const nri = getDataRowIndex(this, ri);
+      for (let ci = sci; ci <= eci; ci += 1) {
+        const cell = this.rows.getCell(nri, ci);
+        if (cell && cell.text != null && `${cell.text}` !== '') {
+          if (ri > lastRow) lastRow = ri;
+          if (ci > lastCol) lastCol = ci;
+        }
+      }
+    }
+    if (lastRow < 0) return null;
+    // bbox 扩到完整合并块，避免裁剪切断 rowspan/colspan；超出选区的合并部分按选区截断
+    for (let pass = 0; pass < 3; pass += 1) {
+      let changed = false;
+      for (let ri = sri; ri <= lastRow; ri += 1) {
+        for (let ci = sci; ci <= lastCol; ci += 1) {
+          const merge = this.merges.getFirstIncludes(ri, ci);
+          if (merge) {
+            const mer = Math.min(merge.eri, eri);
+            const mec = Math.min(merge.eci, eci);
+            if (mer > lastRow) { lastRow = mer; changed = true; }
+            if (mec > lastCol) { lastCol = mec; changed = true; }
+          }
+        }
+      }
+      if (!changed) break;
+    }
+    return { sri, sci, eri: lastRow, eci: lastCol };
+  }
+
   copyToSystemClipboard(evt) {
     let copyText = [];
+    const copyRange = this.trimmedCopyRange() || this.selector.range;
     const {
       sri, eri, sci, eci,
-    } = this.selector.range;
+    } = copyRange;
 
     for (let ri = sri; ri <= eri; ri += 1) {
       const nri = getDataRowIndex(this, ri);
@@ -652,7 +688,7 @@ export default class DataProxy {
 
     // Adding \n and why not adding \r\n is to support online office and client MS office and WPS
     copyText = formatTsvRows(copyText);
-    const copyHtml = formatHtmlClipboard(this, this.selector.range);
+    const copyHtml = formatHtmlClipboard(this, copyRange);
 
     // why used this
     // cuz http protocol will be blocked request clipboard by browser
