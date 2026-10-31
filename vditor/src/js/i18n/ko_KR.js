@@ -139,6 +139,7 @@ window.VditorI18n = {
     'pageWidth': '페이지 너비',
     'typewriterMode': '타자기 모드',
     'headingNumbering': '제목 자동 번호',
+    'heading-numbering': '제목 자동 번호',
     'headingNumberingCustom': '사용자 지정…',
     'headingNumberingCustomTip': '1-6단계 템플릿, 쉼표로 구분. 자리표시자: {c1} 1, {C1} 一, {A1} A, {a1} a, {R1} I, {r1} i',
   'boldColor': '굵은 글씨 색',

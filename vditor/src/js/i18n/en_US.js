@@ -171,6 +171,7 @@ window.VditorI18n = {
     'pageWidth': 'Page Width',
     'typewriterMode': 'Typewriter Mode',
     'headingNumbering': 'Heading Numbering',
+    'heading-numbering': 'Heading Numbering',
     'headingNumberingCustom': 'Custom…',
     'headingNumberingCustomTip': 'Level 1-6 templates, comma separated. Placeholders: {c1} 1, {C1} 一, {A1} A, {a1} a, {R1} I, {r1} i',
     'boldColor': 'Bold Color',

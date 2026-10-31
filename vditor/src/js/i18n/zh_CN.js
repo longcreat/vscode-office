@@ -171,6 +171,7 @@ window.VditorI18n = {
     'pageWidth': '页面宽度',
     'typewriterMode': '打字机模式',
     'headingNumbering': '标题自动编号',
+    'heading-numbering': '标题自动编号',
     'headingNumberingCustom': '自定义…',
     'headingNumberingCustomTip': '1-6 级编号模板，逗号分隔。占位符：{c1} 1、{C1} 一、{A1} A、{a1} a、{R1} I、{r1} i',
     'boldColor': '粗体颜色',

@@ -17,7 +17,8 @@ export class MenuItem {
         if (menuItem.level === 2) {
             hotkey = menuItem.hotkey ? ` &lt;${updateHotkeyTip(menuItem.hotkey)}&gt;` : "";
         }
-        const tip = menuItem.tip ? menuItem.tip + hotkey : `${window.VditorI18n[menuItem.name]}${hotkey}`;
+        const i18nLabel = window.VditorI18n[menuItem.name] ?? (menuItem.name === "heading-numbering" ? window.VditorI18n.headingNumbering : undefined);
+        const tip = menuItem.tip ? menuItem.tip + hotkey : `${i18nLabel ?? menuItem.name}${hotkey}`;
         const tagName = menuItem.name === "upload" ? "div" : "button";
         if (menuItem.level === 2) {
             this.element.innerHTML = `<${tagName} data-type="${menuItem.name}">${tip}</${tagName}>`;

@@ -40,6 +40,7 @@ const TOOLBAR_CODICONS: Record<string, string> = {
     info: "info",
     help: "question",
     find: "search",
+    "heading-numbering": "list-ordered",
 };
 
 export const TABLE_CODICONS = {

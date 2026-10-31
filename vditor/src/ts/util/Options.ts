@@ -243,7 +243,7 @@ export class Options {
             icon: getToolbarCodicon("find"),
             name: "find",
         }, {
-            icon: "",
+            icon: getToolbarCodicon("heading-numbering"),
             name: "heading-numbering",
         }, {
             icon: getToolbarCodicon("edit-mode"),
