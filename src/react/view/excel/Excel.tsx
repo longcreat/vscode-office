@@ -20,6 +20,7 @@ type ExcelColorMode = 'adaptive' | 'light';
 
 const EXCEL_COLOR_MODE_KEY = 'office-excel-color-mode';
 const LEGACY_DARK_MODE_KEY = 'office-dark-mode';
+const LOAD_RETRY_DELAYS = [500, 1200, 2400];
 
 function loadExcelColorMode(): ExcelColorMode {
     const state = vscodeApi?.getState?.() as { excelColorMode?: ExcelColorMode } | undefined;
@@ -115,6 +116,7 @@ function ExcelViewer() {
     const documentCacheIdRef = useRef('')
     const readOnlyRef = useRef(false)
     const spreadSheetRef = useRef<Spreadsheet | null>(null)
+    const openSeqRef = useRef(0)
     const csvEncodingRef = useRef<'utf8' | 'gbk'>('utf8')
     const csvDelimiterRef = useRef(',')
     const initialFormattingRef = useRef('')
@@ -410,21 +412,30 @@ function ExcelViewer() {
             const fileReadOnly = payload.readOnly === true;
             readOnlyRef.current = fileReadOnly;
             setReadOnly(fileReadOnly);
-            loadOfficeBuffer(payload).then(async (buffer) => {
+            const seq = ++openSeqRef.current;
+            const load = async (retry: number): Promise<void> => {
                 try {
+                    const buffer = await loadOfficeBuffer(payload);
+                    if (seq !== openSeqRef.current) return;
                     await initSpreadsheet(buffer, payload);
+                    if (seq !== openSeqRef.current) return;
+                    setLoadError(null);
                 } catch (e) {
+                    if (seq !== openSeqRef.current) return;
+                    // 外部程序写入不是原子操作，重载可能读到写入中的临时状态；
+                    // 已有可用表格时保留旧视图重试，避免错误卡片顶掉当前内容。
+                    if (retry < LOAD_RETRY_DELAYS.length && spreadSheetRef.current) {
+                        await new Promise((resolve) => setTimeout(resolve, LOAD_RETRY_DELAYS[retry]));
+                        if (seq === openSeqRef.current) await load(retry + 1);
+                        return;
+                    }
                     const msg = (e as Error).message || String(e);
                     console.error(`Failed to load Excel file: ${msg}`, e);
                     setLoadError(msg);
                     setLoading(false);
                 }
-            }).catch(error => {
-                const msg = (error as Error).message || String(error);
-                console.error(`Failed to load Excel file: ${msg}`, error);
-                setLoadError(msg);
-                setLoading(false);
-            });
+            };
+            void load(0);
         }).on("saveDone", () => {
         }).emit("init")
 
