@@ -2,7 +2,7 @@
 	"name": "vscode-office",
 	"displayName": "Office Viewer (Local)",
 	"description": "View word, excel, powerpoint files and using WYSIWYG editor for markdown.",
-	"version": "4.3.0",
+	"version": "4.7.2",
 	"publisher": "tangz",
 	"icon": "image/logo.png",
 	"engines": {
@@ -608,6 +608,32 @@
 				"selector": [
 					{
 						"filenamePattern": "file:/**/*.class"
+					}
+				]
+			},
+			{
+				"viewType": "cweijan.jsonViewer",
+				"displayName": "JSON Viewer",
+				"priority": "option",
+				"selector": [
+					{
+						"filenamePattern": "*.json"
+					},
+					{
+						"filenamePattern": "*.jsonc"
+					}
+				]
+			},
+			{
+				"viewType": "cweijan.jsonlViewer",
+				"displayName": "JSONL Viewer",
+				"priority": "default",
+				"selector": [
+					{
+						"filenamePattern": "*.jsonl"
+					},
+					{
+						"filenamePattern": "*.ndjson"
 					}
 				]
 			}

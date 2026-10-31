@@ -1,5 +1,172 @@
 # Change log
 
+# 4.7.2 2026-10-16
+
+Markdown Editor:
+
+- Mermaid subgraph (cluster) fill is now transparent with a colored dashed outline, matching the diagram frame; previously the cluster kept its theme fill (e.g. solid purple).
+
+# 4.7.1 2026-10-16
+
+Markdown Editor:
+
+- Mermaid diagrams no longer render on a filled background (which could turn solid purple under some themes); they now show a transparent canvas with a colored dashed outline.
+
+# 4.7.0 2026-10-15
+
+JSON/JSONL Viewer rework:
+
+- Perf: lazy per-page JSONL parsing (open only splits lines; each page parses its own 200 lines, ~13x faster first open), memoized self-contained tree nodes, debounced search.
+- UI: VS Code-styled toolbar (file name/size, inline tabs, match navigation), tree with indent guides, type-colored values, hit highlighting and flash-on-jump; status bar shows the selected JSONPath; double-click copies JSONPath.
+- Interaction: single-click selects (status bar path), click branches to expand, long values open in the inspector, JSONL bad rows are dimmed with per-page badges.
+
+# 4.6.5 2026-10-15
+
+Fix:
+
+- Import `basename` in the office viewer provider; the missing import made every custom editor fail to open with an assertion error.
+
+# 4.6.4 2026-10-15
+
+JSON/JSONL Viewer:
+
+- Fix JSONL never loading: viewer mode is now decided from the file name at mount instead of the (skipped) open event.
+- Load the viewer stylesheet and codicon font (previously unstyled with tofu icons).
+- Color JSON values by type and refine tree typography.
+
+# 4.6.3 2026-10-15
+
+Fix:
+
+- Register `.json/.jsonc` in the viewer route switch; without it the JSON custom editor never received its HTML and rendered blank.
+- Remove the `?v=` cache-bust query from React viewer asset URLs (webview module loading rejects queried resources); asset filenames are already content-hashed so caching stays correct.
+- Add a global React error boundary so render failures show an error message instead of a blank page.
+
+# 4.6.1 2026-10-14
+
+Fix:
+
+- Wrap lazy viewer routes in Suspense so chunk loading shows a spinner instead of a blank page.
+
+# 4.6.0 2026-10-14
+
+New:
+
+- Add JSON/JSONL viewer. `.json/.jsonc` open as a collapsible tree with type coloring, key/value search (auto-expands match paths), copy value / JSONPath, and a formatted-JSON tab. `.jsonl/.ndjson` open as a table with server-side paging, nested-value cells (click to inspect), bad-line skipping with count, and CSV/JSON/Markdown export.
+
+# 4.5.0 2026-10-14
+
+SQLite Viewer:
+
+- Add a Structure tab: table DDL, column definitions, indexes and foreign keys.
+- Add server-side pagination with total row count (large tables stay fast).
+- Add column sorting (click headers, ASC/DESC toggle).
+- Add query history dropdown (last 20 queries).
+- Add result export to CSV / JSON / Markdown via save dialog.
+- Add a cell value viewer for long text and BLOB columns (JSON formatting, hex + UTF-8 decode).
+- Align toolbar control heights (32px) for a uniform layout.
+
+# 4.4.2 2026-10-14
+
+SQLite Viewer:
+
+- Fix white flash during refresh: keep previous rows visible and show the full-screen loading mask only on first load.
+
+# 4.4.1 2026-10-14
+
+SQLite Viewer:
+
+- Fix blank screen: the query result payload sent to the webview was wrapped one level too deep, crashing the table render.
+
+# 4.4.0 2026-10-14
+
+SQLite Viewer:
+
+- Support editing cells directly (double-click, NULL toggle, numeric validation).
+- Support inserting and deleting rows.
+- Support write statements (INSERT/UPDATE/DELETE/DDL) in the SQL console with dirty tracking.
+- Support saving the database back to file (Ctrl+S), with unsaved indicator in the editor title.
+
+# 4.3.12 2026-9-29
+
+New:
+
+- Add SQLite Viewer for `.db` / `.sqlite` / `.sqlite3` / `.db3` files: browse tables and views, run arbitrary SQL (Ctrl+Enter), with paginated results.
+
+# 4.3.11 2026-9-29
+
+Markdown Editor:
+
+- Copy as Lark flattens blockquotes that contain nested lists or headings (Feishu cannot render them inside quotes), while simple quotes keep their native quote form.
+
+# 4.3.10 2026-9-29
+
+Markdown Editor:
+
+- Copy as Lark merges multi-paragraph blockquotes into a single contiguous quote so Feishu renders them natively instead of literal ">" lines.
+
+# 4.3.9 2026-9-29
+
+Markdown Editor:
+
+- Bust webview resource caching for the markdown editor so updates take effect right after installing a new version.
+
+# 4.3.8 2026-9-29
+
+Markdown Editor:
+
+- Copy as Lark normalization now also strips CR line endings before collapsing blank lines.
+
+# 4.3.7 2026-9-29
+
+Markdown Editor:
+
+- Copy as Lark now collapses consecutive blank lines and drops standalone HTML comments outside code fences, so Feishu pastes no longer show stacks of empty paragraphs.
+
+# 4.3.6 2026-9-29
+
+Markdown Editor:
+
+- Rework Copy as Lark to write Feishu-native markdown plain text only (selection reuses the built-in copy path, no selection copies the full source), so tables paste as native Feishu table blocks.
+
+# 4.3.5 2026-9-29
+
+Markdown Editor:
+
+- Fix Copy as Lark tables not becoming native Feishu table blocks: emit bare semantic tables without inline cell styles.
+
+# 4.3.4 2026-9-29
+
+Markdown Editor:
+
+- Add "Copy as Lark (Feishu)" context menu action: copies a Feishu-optimized render (diagrams as images, complete code blocks, semantic quotes, bordered tables) without touching the existing copy paths.
+
+# 4.3.3 2026-9-28
+
+Markdown Editor:
+
+- Fix external file changes not refreshing while the editor has unsaved edits, which caused stale content and version conflicts on save.
+- Prompt to reload from disk or keep local edits when the file is modified externally during editing.
+
+# 4.3.2 2026-9-22
+
+Markdown Editor:
+
+- Fix custom numbering templates containing quotes breaking the template dialog.
+- Keep the toolbar numbering style label in sync after switching styles.
+
+Excel:
+
+- Fix "Corrupted zip" error when an open file is modified by another program: reloads now wait for the write to settle, retry quietly, and keep the last good view.
+
+# 4.3.1 2026-9-15
+
+Markdown Editor:
+
+- Fix heading numbering toolbar button icon rendering.
+- Fix custom numbering template popup not responding in webview.
+- Simplify heading numbering dropdown menu by removing redundant sample column.
+
 # 4.3.0 2026-9-15
 
 Markdown Editor:
