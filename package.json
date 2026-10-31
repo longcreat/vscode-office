@@ -799,8 +799,10 @@
 		"dev:web": "OFFICE_EXTENSION_TARGET=web vite --mode=development",
 		"lint:fix": "eslint \"src/**/*.{ts,tsx}\" --fix",
 		"build": "vite build --mode=production",
-		"package": "vsce package --no-dependencies",
-		"publish": "vsce publish --no-dependencies && ovsx publish --no-dependencies",
+		"package": "npx @vscode/vsce package --no-dependencies",
+		"install:local": "npm run package && node scripts/install-local.mjs",
+		"publish": "npx @vscode/vsce publish --no-dependencies && npx ovsx publish --no-dependencies",
+		"publish:ovsx": "npx ovsx publish --no-dependencies",
 		"vscode:prepublish": "npm run build"
 	},
 	"devDependencies": {
