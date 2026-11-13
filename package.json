@@ -2,7 +2,7 @@
 	"name": "vscode-office",
 	"displayName": "Office Viewer (Local)",
 	"description": "View word, excel, powerpoint files and using WYSIWYG editor for markdown.",
-	"version": "4.7.2",
+	"version": "4.7.3",
 	"publisher": "tangz",
 	"icon": "image/logo.png",
 	"engines": {
@@ -253,6 +253,18 @@
 				"title": "Git: Quick Sync",
 				"icon": "$(sync)",
 				"enablement": "!office.extensionHost.web"
+			},
+			{
+				"command": "office.image.compress",
+				"title": "Compress Image…",
+				"category": "Office",
+				"enablement": "!office.extensionHost.web"
+			},
+			{
+				"command": "office.image.exportPdf",
+				"title": "Export Images to PDF…",
+				"category": "Office",
+				"enablement": "!office.extensionHost.web"
 			}
 		],
 		"keybindings": [
@@ -360,6 +372,16 @@
 					"command": "office.gitHistory.viewFileHistory",
 					"group": "git",
 					"when": "config.git.enabled && gitOpenRepositoryCount != 0 && resourceScheme == file && !office.extensionHost.web"
+				},
+				{
+					"command": "office.image.compress",
+					"group": "office@1",
+					"when": "resourceScheme == file && resourceExtname =~ /^\\.(png|jpg|jpeg|webp|gif|bmp|tif|tiff|heic|heif|ico|apng)$/i"
+				},
+				{
+					"command": "office.image.exportPdf",
+					"group": "office@2",
+					"when": "resourceScheme == file && resourceExtname =~ /^\\.(png|jpg|jpeg|webp|gif|bmp|tif|tiff|heic|heif|ico|apng)$/i"
 				}
 			]
 		},
@@ -864,6 +886,7 @@
 		"@typescript-eslint/eslint-plugin": "^8.62.1",
 		"@typescript-eslint/parser": "^8.62.1",
 		"@vitejs/plugin-react": "^6.0.2",
+		"@vscode/vsce": "^4.1.0",
 		"chokidar": "^5.0.0",
 		"esbuild": "^0.28.1",
 		"esbuild-plugin-copy": "2.1.1",

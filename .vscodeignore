@@ -1,4 +1,5 @@
 .vscode/**
+.workbuddy/**
 .vscode-test/**
 out/test/**
 src/**

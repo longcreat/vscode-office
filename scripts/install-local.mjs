@@ -1,11 +1,21 @@
 import { execSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
+import { homedir } from 'node:os';
 import { join } from 'node:path';
 
-// 依序探测可用的 IDE CLI：环境变量 > 本机常见 Antigravity 安装位置 > PATH 上的 antigravity-ide/code
+// 依序探测可用的 IDE CLI：环境变量 > 本机常见安装位置 > PATH 上的 antigravity-ide/code
 function resolveCli() {
+    const appBundles = [
+        '/Applications/Antigravity IDE.app',
+        '/Applications/Antigravity.app',
+        join(homedir(), 'Applications', 'Antigravity IDE.app'),
+        join(homedir(), 'Applications', 'Antigravity.app'),
+    ];
     const fileCandidates = [
         process.env.OFFICE_IDE_CLI,
+        // macOS：CLI 随 app 一起分发
+        ...appBundles.map((app) => join(app, 'Contents', 'Resources', 'app', 'bin', 'antigravity-ide')),
+        // Windows
         process.env.LOCALAPPDATA && join(process.env.LOCALAPPDATA, 'Programs', 'Antigravity', 'bin', 'antigravity.cmd'),
         'G:\\Antigravity IDE\\bin\\antigravity-ide.cmd',
     ].filter(Boolean);
@@ -24,6 +34,7 @@ function resolveCli() {
 const cli = resolveCli();
 if (!cli) {
     console.error('未找到 IDE CLI（antigravity-ide / code）。可设置 OFFICE_IDE_CLI 环境变量指向 CLI 路径。');
+    console.error('macOS 下通常是：/Applications/Antigravity IDE.app/Contents/Resources/app/bin/antigravity-ide');
     process.exit(1);
 }
 

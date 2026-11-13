@@ -1,5 +1,27 @@
 # Change log
 
+# 4.7.3 2026-11-04
+
+PDF Viewer:
+
+- New: export pages as images. A toolbar button opens a small panel to pick quality (普通 144 DPI / 高清 288 DPI), format (PNG/JPG), and either the current page or every page as one ZIP. Rendered with pdf.js into an offscreen canvas, so exported images keep the original colors even in dark reading mode.
+- New: copy the current page to the clipboard as an image, without touching the disk.
+- New: snip a region. Drag a rectangle over any page to copy just that area (table, chart, signature) at the selected quality; Esc cancels.
+- New: text extraction. Copy the whole document's text to the clipboard, or save it as TXT/Markdown for feeding into other tools. Scanned PDFs without a text layer report a clear hint instead of writing an empty file.
+- Fix: export actions no longer leave the panel stuck on "writing file…" when the extension host is still running an older build. A liveness check now reports "extension not responding, run Developer: Reload Window", Esc cancels a stuck export, and a watchdog restores the buttons after three idle minutes.
+
+Image Viewer:
+
+- New: an action toolbar with 适应 / 旋转 / 翻转 / 压缩 / 导出 PDF.
+- New: export the current image or every image in the folder as one PDF, either A4-centered or fit-to-image pages. Assembled with pdf-lib on the extension side, so the webview bundle stays small.
+- New: compress and resize — pick JPG/PNG/WebP, drag the quality slider, and set target dimensions with an optional aspect lock; the panel shows a live size estimate. Files are saved as `name-compressed.ext`; overwriting the original asks for confirmation and is refused when the format changes.
+- New: copy the current image (with rotation / crop applied) to the clipboard, or copy a Markdown link / file path from the same menu.
+- New: crop by dragging a rectangle over the page; the cropped result replaces the preview and becomes the base for compression and PDF export. A standalone「保存」button at the end of the toolbar saves the current crop / rotation / flip as `name-cropped.ext` (or `name-edited.ext`), and stays disabled while nothing is modified. `适应` resets both zoom and crop.
+- New: long-side presets (1920 / 1280 / 800) in the compress panel; sizes larger than the current image are disabled instead of silently doing nothing.
+- New: batch compress — tick "应用到本文件夹全部 N 张" to write `name-compressed.ext` next to every image in the folder, without dialogs; name clashes get a numeric suffix.
+- Fix: animated GIF / APNG are flagged before compression, and "覆盖原图" is disabled for them so the animation can't be destroyed by accident.
+- New: explorer context menu entries — "Compress Image…" opens the viewer with the panel ready, "Export Images to PDF…" merges the selected PNG/JPG files into one PDF without opening them.
+
 # 4.7.2 2026-10-16
 
 Markdown Editor:
