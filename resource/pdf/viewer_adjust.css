@@ -768,3 +768,262 @@ body.office-adaptive-theme #darkModeToggle.toolbarButton.toggled:hover {
     -webkit-mask-image: var(--secondaryToolbarButton-documentProperties-icon);
     mask-image: var(--secondaryToolbarButton-documentProperties-icon);
 }
+
+/* ---- 导出图片面板 ---- */
+/* 统一走中性灰阶（半透明灰），不引入任何强调色，浅色/深色主题都能直接用 */
+.office-export-group {
+    margin-right: 2px;
+}
+
+.office-export-group > .toolbarButton {
+    float: none;
+}
+
+#exportImageToggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#exportImageToggle::before {
+    display: none !important;
+}
+
+#exportImageToggle svg {
+    pointer-events: none;
+}
+
+#exportImageToggle[disabled] {
+    opacity: 0.45;
+    cursor: default;
+}
+
+.office-export-panel {
+    --export-line: rgba(128, 128, 128, 0.28);
+    --export-line-strong: rgba(128, 128, 128, 0.52);
+    --export-fill: rgba(128, 128, 128, 0.14);
+    --export-fill-hover: rgba(128, 128, 128, 0.1);
+    position: fixed;
+    z-index: 40000;
+    width: 244px;
+    padding: 0;
+    box-sizing: border-box;
+    font-size: 12px;
+    line-height: 1.4;
+    border-radius: var(--pdf-segment-radius, 8px);
+    background-color: var(--doorhanger-bg-color, #fff) !important;
+    color: var(--main-color, #333) !important;
+    border: 1px solid var(--export-line) !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    max-height: calc(100vh - 16px);
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.office-export-head {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--export-line);
+    font-weight: 600;
+}
+
+.office-export-body {
+    padding: 10px 12px 12px;
+}
+
+.office-export-field {
+    margin-bottom: 10px;
+}
+
+.office-export-label {
+    margin-bottom: 5px;
+    opacity: 0.55;
+    font-size: 11px;
+}
+
+.office-export-seg {
+    display: flex;
+    gap: 2px;
+    padding: 2px;
+    border: 1px solid var(--export-line);
+    border-radius: 6px;
+    background-color: transparent;
+}
+
+.office-export-seg > button {
+    flex: 1 1 0;
+    padding: 4px 8px;
+    border: none;
+    border-radius: 4px;
+    background-color: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    transition: background-color 0.12s ease;
+}
+
+.office-export-seg > button:hover {
+    background-color: var(--export-fill-hover);
+}
+
+.office-export-seg > button.selected {
+    background-color: var(--export-fill);
+    font-weight: 600;
+}
+
+.office-export-seg > button:focus-visible,
+.office-export-action:focus-visible {
+    outline: 1px solid var(--export-line-strong);
+    outline-offset: 1px;
+}
+
+.office-export-info {
+    margin: 12px 0 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--export-line);
+    opacity: 0.55;
+    font-variant-numeric: tabular-nums;
+}
+
+.office-export-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.office-export-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.office-export-section {
+    margin: 12px 0 0;
+    padding-top: 10px;
+    border-top: 1px solid var(--export-line);
+    opacity: 0.55;
+    font-size: 11px;
+}
+
+#officeExportCancel {
+    margin-top: 6px;
+}
+
+.office-export-action {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid var(--export-line);
+    border-radius: 6px;
+    background-color: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    transition: background-color 0.12s ease, border-color 0.12s ease;
+}
+
+.office-export-action:hover:not(:disabled) {
+    background-color: var(--export-fill-hover);
+    border-color: var(--export-line-strong);
+}
+
+.office-export-action:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+/* "主"按钮只用字重和描边区分，不做填充色 */
+.office-export-action.primary {
+    border-color: var(--export-line-strong);
+    font-weight: 600;
+}
+
+.office-export-status {
+    min-height: 16px;
+    margin-top: 8px;
+    opacity: 0.6;
+    font-variant-numeric: tabular-nums;
+}
+
+.office-export-status:empty {
+    min-height: 0;
+    margin-top: 0;
+}
+
+.office-export-status[data-tone="error"] {
+    color: #b56a62;
+    opacity: 1;
+}
+
+body.office-adaptive-theme .office-export-panel {
+    background-color: var(--vscode-menu-background) !important;
+    color: var(--vscode-menu-foreground, var(--vscode-foreground)) !important;
+}
+
+/* ---- 框选截图 ---- */
+.office-snip-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 40000;
+    cursor: crosshair;
+    user-select: none;
+    touch-action: none;
+}
+
+.office-snip-overlay * {
+    pointer-events: none;
+}
+
+.office-snip-rect {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 0;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    outline: 1px solid rgba(0, 0, 0, 0.45);
+    background-color: transparent;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.28);
+}
+
+.office-snip-hint {
+    position: absolute;
+    left: 50%;
+    top: 16px;
+    transform: translateX(-50%);
+    padding: 5px 12px;
+    border-radius: 999px;
+    background-color: rgba(30, 30, 30, 0.72);
+    color: #f2f2f2;
+    font: 12px/1.4 message-box;
+    white-space: nowrap;
+}
+
+body.office-snip-active {
+    cursor: crosshair;
+}
+
+/* ---- 轻提示 ---- */
+.office-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    z-index: 50000;
+    padding: 7px 14px;
+    border-radius: 6px;
+    background-color: rgba(32, 32, 32, 0.92);
+    color: #f4f4f4;
+    font: 12px/1.4 message-box;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 8px);
+    transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.office-toast.visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+.office-toast[data-tone="error"] {
+    background-color: rgba(122, 55, 48, 0.95);
+}

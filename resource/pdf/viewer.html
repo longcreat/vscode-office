@@ -37,6 +37,7 @@ See https://github.com/adobe-type-tools/cmap-resources
   <script src="pdf.js"></script>
   <script src="viewer.js"></script>
   <script src="main.js"></script>
+  <script src="export.js"></script>
 </head>
 
 <body tabindex="1">
@@ -263,6 +264,11 @@ See https://github.com/adobe-type-tools/cmap-resources
                 <span data-l10n-id="bookmark_label">Current View</span>
               </a>
 
+              <div class="splitToolbarButton office-export-group">
+                <button id="exportImageToggle" class="toolbarButton" title="导出 / 复制" tabindex="35"
+                  aria-label="导出或复制" disabled="disabled"></button>
+              </div>
+
               <div class="splitToolbarButton office-theme-toggle-group">
                 <button id="themeAdaptToggle" class="toolbarButton" title="开启主题适配（跟随 VS Code 颜色）" tabindex="35" aria-label="开启主题适配"></button>
                 <div class="splitToolbarButtonSeparator"></div>
@@ -470,6 +476,46 @@ See https://github.com/adobe-type-tools/cmap-resources
 
   </div> <!-- outerContainer -->
   <div id="printContainer"></div>
+
+  <div id="officeExportPanel" class="office-export-panel hidden" role="dialog" aria-label="导出">
+    <div class="office-export-head">导出</div>
+    <div class="office-export-body">
+      <div class="office-export-field">
+        <div class="office-export-label">清晰度</div>
+        <div class="office-export-seg" id="officeExportQualitySeg" role="group" aria-label="清晰度">
+          <button type="button" data-quality="normal" title="144 DPI，适合屏幕查看">普通</button>
+          <button type="button" data-quality="high" title="288 DPI，适合打印">高清</button>
+        </div>
+      </div>
+      <div class="office-export-field">
+        <div class="office-export-label">图片格式</div>
+        <div class="office-export-seg" id="officeExportFormatSeg" role="group" aria-label="图片格式">
+          <button type="button" data-format="png" title="无损，文件较大">PNG</button>
+          <button type="button" data-format="jpeg" title="有损，文件较小">JPG</button>
+        </div>
+      </div>
+      <div class="office-export-info" id="officeExportInfo">文档尚未加载</div>
+      <div class="office-export-actions">
+        <button type="button" id="officeExportCurrent" class="office-export-action primary">导出当前页</button>
+        <button type="button" id="officeExportAll" class="office-export-action">导出全部页（ZIP）</button>
+      </div>
+      <div class="office-export-grid">
+        <button type="button" id="officeExportCopyImage" class="office-export-action"
+          title="按当前清晰度渲染并复制到剪贴板">复制当前页</button>
+        <button type="button" id="officeExportSnip" class="office-export-action"
+          title="拖拽框选页面区域，复制到剪贴板">框选截图</button>
+      </div>
+      <div class="office-export-section">文本</div>
+      <div class="office-export-grid">
+        <button type="button" id="officeExportCopyText" class="office-export-action"
+          title="提取全文文本并复制到剪贴板">复制全文</button>
+        <button type="button" id="officeExportSaveText" class="office-export-action"
+          title="提取全文文本并保存为 TXT">导出 TXT…</button>
+      </div>
+      <button type="button" id="officeExportCancel" class="office-export-action hidden">取消导出</button>
+      <div class="office-export-status" id="officeExportStatus"></div>
+    </div>
+  </div>
 </body>
 
 </html>

@@ -6,6 +6,7 @@ import { Handler } from '../common/handler';
 import { Util } from '../common/util';
 import { handleImage, isImage } from './handlers/imageHanlder';
 import { handleSvg } from './handlers/svgHandler';
+import { handlePdfExport } from './handlers/pdfExportHandler';
 import { handleSqlite } from './sqliteHandler';
 import { handleJsonl } from './jsonlHandler';
 import { isVirtualUri, readUriText } from './handlers/officeContent';
@@ -89,7 +90,7 @@ export class OfficeViewerProvider implements vscode.CustomReadonlyEditorProvider
 				route = 'font';
 				break;
 			case '.pdf':
-				void this.loadPdfViewer(webview);
+				void this.loadPdfViewer(handler, uri);
 				break;
 			case '.epub':
 				route = 'epub';
@@ -127,7 +128,10 @@ export class OfficeViewerProvider implements vscode.CustomReadonlyEditorProvider
 		if (route) return ReactApp.view(webview, { route, fileName: basename(uri.fsPath) });
 	}
 
-	private async loadPdfViewer(webview: vscode.Webview) {
+	private async loadPdfViewer(handler: Handler, uri: vscode.Uri) {
+		const webview = handler.panel.webview;
+		// 先注册导出通道，再注入页面，避免 webview 早期消息丢失
+		handlePdfExport(handler, uri);
 		const html = await readExtensionText(this.context, 'resource', 'pdf', 'viewer.html');
 		webview.html = html.replace('{{baseUrl}}', this.getBaseUrl(webview, 'pdf'));
 	}
